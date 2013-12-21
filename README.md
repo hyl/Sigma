@@ -10,6 +10,7 @@ Description
 Requirements
 ============
   * Node.js
+    * Crypto
   * WebSocket-enabled browser
   * Crypto
   
