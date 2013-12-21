@@ -29,6 +29,7 @@ var salt = crypto.randomBytes(128).toString('base64');
 var count = 0;
 var clients = {};
 var request_clients = [];
+var messages = [];
 
 console.log((new Date()) + ' Salt for this session is ' + salt);
 
@@ -56,6 +57,7 @@ wsServer.on('request', function(r){
                     if(clients[data.to.id]){
                         clients[data.to.id].sendUTF(message.utf8Data);
                         clients[data.from.id].sendUTF(message.utf8Data);
+                        messages.push(message.uft8Data);
                     }else{
                         clients[data.from.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected because your partner closed their browser window. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
                     }
@@ -96,6 +98,15 @@ wsServer.on('request', function(r){
                     clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Our system has detected that you attempted to disconnect someone other than yourself. This is against the rules, and further attempts will result in a ban. The person you attempted to disconnect has been notified.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
                     clients[data.partner.id].sendUTF(JSON.stringify({"type": "message", "message": "Someone you are not chatting with just attempted disconnect from your current partner by exploiting our system, however we detected it and blocked it.", "from": {"id": "system", "hash": ""}, "to": {"id": data.partner.id, "hash": ""}}));
                 }
+                break;
+            case "stats":
+            	console.log((new Date()) + ' Client ' + data.from.id + ' requesting stats');
+            	if(checkHash(data.from.id, data.from.hash)){
+            		clients[data.from.id].sendUTF(JSON.stringify({"type": "stats", "user_count": Object.keys(clients).length, "message_count": messages.length, "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
+            	}else{
+            		console.log((new Date()) + ' Client hash invalid, request refused and client notified.');
+            		clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your request for stats has been denied as your hash and ID do not match.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
+            	}
         }
         
     });
@@ -104,3 +115,7 @@ wsServer.on('request', function(r){
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
 });
+
+setInterval(function() {
+	console.log((new Date()) + ' Stats: ' + Object.keys(clients).length + ' users, ' + messages.length + ' messages.');
+}, 10000);

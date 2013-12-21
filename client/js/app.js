@@ -6,7 +6,7 @@ $("#start_chat").click(function(){
 	});
 });
 function connect(){
-	var ws = new WebSocket('ws://__YOUR WEBSOCKET SERVER__', 'echo-protocol');
+	var ws = new WebSocket('ws://109.74.195.222:8888', 'echo-protocol');
 	var focused;
 	var unread = 0;
 	/* ========== WEBSOCKET STUFF ========== */
@@ -42,6 +42,7 @@ function connect(){
 	    			unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
 	    		}
+	    		requestStats();
 	    		break;
 	    	case "picture":
 	    		var time = new Date(),
@@ -55,6 +56,7 @@ function connect(){
 	    		console.log("Assigned ID of " + client.self.id + " with hash of " + data.hash);
 	    		$("#status").html("<strong>Connected to the chat server, just waiting for a partner. Hold tight!</strong>");
 	    		requestClient();
+	    		requestStats();
 	    		break;
 	    	case "partner":
 	    		client.partner.id = data.id;
@@ -75,6 +77,10 @@ function connect(){
 	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>System:</b> ' + data.message + '</li>');
 	    		setDisabled(true);
 	    		requestClient();
+	    		break;
+	    	case "stats":
+	    		$('#clients').text(data.user_count);
+	    		$('#messages').text(data.message_count);
 	    		break;
 		}
 	});
@@ -130,6 +136,9 @@ function connect(){
 		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "partner": {"id": client.partner.id, "hash": client.partner.hash}}));
 		console.log("Disconnected from partner...");
 	}
+	function requestStats(){
+    	ws.send(JSON.stringify({"type": "stats", "from": {"id": client.self.id, "hash": client.self.hash}}));
+    }
 	function setDisabled(action){
 		$("#message, #disconnect, #send_picture").prop('disabled', action);
 	}
