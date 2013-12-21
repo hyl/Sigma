@@ -14,4 +14,4 @@ Requirements
   
 Installation
 ============
-Stick `server.js` on your server, and run `sudo node server.js`. Put `chat.html` somewhere and make sure that the path in `app.js` matches that of your install.
+Stick `server/server.js` on your server. Open it in your favourite editor (`nano`!) and edit line 28 to include your salt variable. It should be at least 8 characters long, and a mix of upper/lowercase letters and numbers (eg "w0aff4lasNR685q"). Now run `sudo node server.js`. Put `client/index.html` somewhere and make sure that the path in `client/js/app.js` matches that of your install location.
