@@ -15,4 +15,7 @@ Requirements
   
 Installation
 ============
-Stick `server/server.js` on your server. Now run `sudo node server.js`. Put `client/index.html` somewhere and make sure that the path in `client/js/app.js` matches that of your install location.
+Stick `server/server.js` on your server.
+Inatall Crypto with `sudo npm install crypto`
+Now run `sudo node server.js`.
+Put `client/index.html` somewhere and make sure that the path in `client/js/app.js` matches that of your install location.
