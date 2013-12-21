@@ -25,10 +25,12 @@ function checkHash(id, hash) {
     }
 }
 
-var salt = "__SALT THAT WILL BE USED WHEN GENERATING HASH FOR CLIENTS__";
+var salt = crypto.randomBytes(128).toString('base64');
 var count = 0;
 var clients = {};
 var request_clients = [];
+
+console.log((new Date()) + ' Salt for this session is ' + salt);
 
 wsServer.on('request', function(r){
     var connection = r.accept('echo-protocol', r.origin);
@@ -78,6 +80,17 @@ wsServer.on('request', function(r){
                 }else{
                     console.log((new Date()) + ' Client hash invalid, request refused and client notified.');
                     clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your request for a new partner has been denied as your hash and ID do not match. This could mean that someone has attempted to request a new partner on your behalf.", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
+                }
+                break;
+            case "disconnect":
+                console.log((new Date()) + ' Client ' + data.from.id + ' requesting disconnect from ' + data.partner.id);
+                if(checkHash(data.from.id, data.from.hash) && checkHash(data.partner.id, data.partner.hash)){
+                    clients[data.from.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
+                    clients[data.partner.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window.", "from": {"id": "system", "hash": ""}, "to": {"id": data.partner.id, "hash": ""}}));
+                }else{
+                    console.log((new Date()) + ' Client hashes invalid, alerting sender and intended recipient.');
+                    clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Our system has detected that you attempted to disconnect someone other than yourself. This is against the rules, and further attempts will result in a ban. The person you attempted to disconnect has been notified.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
+                    clients[data.partner.id].sendUTF(JSON.stringify({"type": "message", "message": "Someone you are not chatting with just attempted disconnect from your current partner by exploiting our system, however we detected it and blocked it.", "from": {"id": "system", "hash": ""}, "to": {"id": data.partner.id, "hash": ""}}));
                 }
         }
         

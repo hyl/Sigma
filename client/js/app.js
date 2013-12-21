@@ -60,11 +60,20 @@ function connect(){
 	    		client.partner.id = data.id;
 	    		client.partner.hash = data.hash;
 	    		console.log("Assigned partner with an ID of " + client.partner + " with hash of " + data.hash);
+	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
 	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello!");
 	    		setDisabled(false);
 	    		break;
 	    	case "status":
 	    		$("#status").html("<strong>" + data.message + "</strong>");
+	    		break;
+	    	case "disconnected":
+	    		var time = new Date(),
+	    			hours = pad(time.getHours()),
+	    			minutes = pad(time.getMinutes());
+	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>System:</b> ' + data.message + '</li>');
+	    		setDisabled(true);
+	    		requestClient();
 	    		break;
 		}
 	});
@@ -84,12 +93,16 @@ function connect(){
 			$('#message').val('');
 		}
 	});
-	$("#send_picture").click(function(){
+	$("#send_picture").click(function(result){
 		bootbox.prompt("Enter picture URL", sendPicture(result));
+	});
+	$("#disconnect").click(function(){
+		console.log("Disconnecting from partner...");
+		disconnect();
 	});
 	$(document).keydown(function (e) {
 	    if(e.which === 27 && (e.ctrlKey || e.metaKey)){ // Ctrl + ESC
-	        // disconnect
+	        disconnect();
 	    }
 	});
 
@@ -111,6 +124,10 @@ function connect(){
 	function requestClient(){
 		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash}}));
 		console.log("Requested partner...");
+	}
+	function disconnect(){
+		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "partner": {"id": client.partner.id, "hash": client.partner.hash}}));
+		console.log("Disconnected from partner...");
 	}
 	function setDisabled(action){
 		$("#message, #disconnect, #send_picture").prop('disabled', action);
