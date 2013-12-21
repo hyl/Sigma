@@ -14,4 +14,4 @@ Requirements
   
 Installation
 ============
-Stick `server.js` on your server, and run `sudo node server.js`. Put `chat.html` somewhere and make sure that the path in `app.js` matches that of your install.
+Stick `server.js` on your server, and run `sudo node server.js`. Put `index.html` somewhere and make sure that the path in `js/app.js` matches that of your install.
