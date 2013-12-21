@@ -1,0 +1,23 @@
+{
+  "name": "Sigma",
+  "description": "Private web chat using Node.js and WebSocket.",
+  "version": "0.1",
+  "author": "Benedict Lewis <benedict@ovalbit.com>",
+  "contributors": [
+    {
+      "name": "Benedict Lewis",
+      "email": "benedict@ovalbit.com",
+      "web": "http://www.ovalbit.com"
+    }
+  ],
+  "dependencies": {
+    "crypto": "latest"
+  },
+  "licenses": [
+    {
+      "name": "GNU General Public License v3 (GPL-3.0)",
+      "url": "http://opensource.org/licenses/GPL-3.0"
+    }
+  ],
+  "homepage": "https://github.com/OvalBit/Sigma"
+}
