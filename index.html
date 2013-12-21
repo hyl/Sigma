@@ -1,98 +1,78 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=640" />
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Sigma : Private web chat using Node.js and WebSocket" />
 
-    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <script type="text/javascript" src="javascripts/modernizr.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('#main_content').headsmart()
-      })
-    </script>
-    <title>Sigma by OvalBit</title>
+    <title>Sigma</title>
   </head>
 
   <body>
-    <a id="forkme_banner" href="https://github.com/OvalBit/Sigma">View on GitHub</a>
-    <div class="shell">
 
-      <header>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <h1>Sigma</h1>
-            <h2>Private web chat using Node.js and WebSocket</h2>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-      </header>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/OvalBit/Sigma">View on GitHub</a>
 
-      <section id="downloads">
-        <span class="inner">
-          <a href="https://github.com/OvalBit/Sigma/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/OvalBit/Sigma/tarball/master" class="tgz"><em>download</em> .TGZ</a>
-        </span>
-      </section>
+          <h1 id="project_title">Sigma</h1>
+          <h2 id="project_tagline">Private web chat using Node.js and WebSocket</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/OvalBit/Sigma/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/OvalBit/Sigma/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      <span class="banner-fix"></span>
-
-
-      <section id="main_content">
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<a name="welcome-to-sigma" class="anchor" href="#welcome-to-sigma"><span class="octicon octicon-link"></span></a>Welcome to Sigma.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Sigma is the easiest way to create a multi-user, one-on-one chat server using Node.js and WebSocket. Think Omegle, but less horny-teenagery and more open-sourcey. Sigma can be run with the included front end, or just a backend so that you are free to design your own UI. Sigma is super easy to install, with only one dependency:</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<pre><code>$ npm install
+$ node server.js
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>You may want to edit <code>server.js</code> before running it so that you can change the port it runs on.</p>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p><a href="http://ovalbit.github.io/sigma/demo/">http://ovalbit.github.io/sigma/demo/</a></p>
 
 <h3>
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Sigma was authored by Benedict Lewis. So far, no one else has contributed.</p>
+
+<h3>
+<a name="found-a-bug" class="anchor" href="#found-a-bug"><span class="octicon octicon-link"></span></a>Found a bug?</h3>
+
+<p>Sorry about that. Just open a new issue, or feel free to fork Sigma, fix it, and then submit a pull request and I will get it integrated as soon as possible (promise!).</p>
 
 <h3>
 <a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>Having trouble? Contact <a href="mailto:benedict@ovalbit.com">benedict@ovalbit.com</a> and I'll see what I can do.</p>
       </section>
+    </div>
 
-      <footer>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <p>this project by <a href="https://github.com/OvalBit">OvalBit</a> can be found on <a href="https://github.com/OvalBit/Sigma">GitHub</a></p>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
-        <span class="octocat"></span>
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Sigma maintained by <a href="https://github.com/OvalBit">OvalBit</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
-
     </div>
 
     
+
   </body>
 </html>
