@@ -65,6 +65,7 @@ function connect(){
 	    		setDisabled(false);
 	    		break;
 	    	case "status":
+	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
 	    		$("#status").html("<strong>" + data.message + "</strong>");
 	    		break;
 	    	case "disconnected":

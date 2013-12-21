@@ -53,8 +53,12 @@ wsServer.on('request', function(r){
                 }
                 console.log((new Date()) + ' New ' + data.type + ' sent from ' + data.from.id + ' to ' + data.to.id + ': ' + data.message);
                 if(checkHash(data.from.id, data.from.hash) && checkHash(data.to.id, data.to.hash)){
-                    clients[data.to.id].sendUTF(message.utf8Data);
-                    clients[data.from.id].sendUTF(message.utf8Data);
+                    if(clients[data.to.id]){
+                        clients[data.to.id].sendUTF(message.utf8Data);
+                        clients[data.from.id].sendUTF(message.utf8Data);
+                    }else{
+                        clients[data.from.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected because your partner closed their browser window. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
+                    }
                 }else{
                     console.log((new Date()) + ' Client hashes invalid, alerting sender and intended recipient.');
                     clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Our system has detected that you attempted to reroute your message by modifying the Javascript variables. This is not allowed, and subsequent attempts may result in a ban. The user you attempted to contact has also been notified.", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
