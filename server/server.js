@@ -107,6 +107,23 @@ wsServer.on('request', function(r){
             		console.log((new Date()) + ' Client hash invalid, request refused and client notified.');
             		clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your request for stats has been denied as your hash and ID do not match.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
             	}
+                break;
+            case "typing":
+                console.log((new Date()) + ' Client ' + data.from.id + ' is typing, while chatting to ' + data.to.id);
+                if(checkHash(data.from.id, data.from.hash) && checkHash(data.to.id, data.to.hash)){
+                    clients[data.to.id].sendUTF(JSON.stringify({"type": "typing", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
+                }else{
+                    console.log((new Date()) + ' Client hashes invalid, rejecting status and taking no further action.');
+                }
+                break;
+            case "read":
+                console.log((new Date()) + ' Client ' + data.from.id + ' has read all messages from ' + data.to.id);
+                if(checkHash(data.from.id, data.from.hash) && checkHash(data.to.id, data.to.hash)){
+                    clients[data.to.id].sendUTF(JSON.stringify({"type": "read", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
+                }else{
+                    console.log((new Date()) + ' Client hashes invalid, rejecting status and taking no further action.');
+                }
+                break;
         }
         
     });
