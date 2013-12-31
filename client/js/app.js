@@ -82,7 +82,12 @@ function connect(){
 	    		$('#clients').text(data.user_count);
 	    		$('#messages').text(data.message_count);
 	    		break;
-		}
+	    	case "typing":
+	    		$("#message").prop('placeholder', 'Your partner is typing...');
+	    		break;
+	    	case "read":
+	    		$('#chat span').last().html(this.html() + ' &#10004;');
+		}		break;
 	});
 
 	/* ========== UI STUFF ========== */
@@ -99,6 +104,7 @@ function connect(){
 			sendMessage($('#message').val());
 			$('#message').val('');
 		}
+		ws.send(JSON.stringify({"type": "typing", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	});
 	$("#send_picture").click(function(result){
 		bootbox.prompt("Enter picture URL", sendPicture(result));
@@ -145,10 +151,11 @@ function connect(){
 	function onBlur() {
 		focused = false;
 	};
-	function onFocus(){
+	function onFocus() {
 		focused = true;
 		unread = 0;
 		document.title = "Σigma - Chat to random strangers";
+		ws.send(JSON.stringify({"type": "read", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	};
 
 	if (/*@cc_on!@*/false) {
@@ -158,4 +165,8 @@ function connect(){
 		window.onfocus = onFocus;
 		window.onblur = onBlur;
 	}
+
+	setInterval(function() {	
+		$("#message").prop('placeholder', 'Enter your message and hit enter...');
+	}, 1000);
 }
