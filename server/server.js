@@ -9,7 +9,8 @@ var http = require("http"),
     count = 0,
     messages = 0,
     clients = {},
-    request_clients = [];
+    request_clients = [],
+    stat_interval = 10000;
 
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Connection": "Upgrade"});
@@ -92,7 +93,10 @@ wsServer.on("request", function(r){
     connection.on("message", function(message) {
         var data = JSON.parse(message.utf8Data);
         switch(data.type){
-            case "message" || "picture":
+            case "message": case "picture":
+                if(data.type == "picture"){
+                    log("success", "Recieved picture with URL of " + data.url + ", sending on...");
+                }
                 send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, message.utf8Data); 
                 break;
             case "requestpartner":
@@ -122,7 +126,7 @@ wsServer.on("request", function(r){
                 break;
             case "stats":
                 log("info", "Client " + data.from.id + " requesting stats");
-                send({"id": "server"}, {"id": data.from.id}, JSON.stringify({"type": "stats", "user_count": Object.keys(clients).length, "message_count": messages.length}));
+                send({"id": "server"}, {"id": data.from.id}, JSON.stringify({"type": "stats", "user_count": Object.keys(clients).length, "message_count": messages}));
                 break;
             case "typing":
                 log("info", "Client " + data.from.id + " is typing while in a conversation with " + data.to.id);
@@ -139,4 +143,4 @@ wsServer.on("request", function(r){
 
 setInterval(function() {
     log("stats", "Stats: " + Object.keys(clients).length + " users, " + messages + " messages");
-}, 30000);
+}, stat_interval);

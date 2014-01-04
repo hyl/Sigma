@@ -45,11 +45,22 @@ function connect(){
 	    		requestStats();
 	    		break;
 	    	case "picture":
-	    		console.log("recieved picture");
 	    		var time = new Date(),
 	    			hours = pad(time.getHours()),
 	    			minutes = pad(time.getMinutes());
+	    		if(data.from.id == client.self.id){
+	    			from = "You";
+	    		}else if(data.from.id == client.partner.id){
+	    			from = "Partner";
+	    		}else{
+	    			from = "System";
+	    		}
 	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> <img src="' + data.url + '" alt="What is the meaning of life?"></li>');
+	    		if(!focused){
+	    			unread++;
+					document.title = "(" + unread + ") Σigma - Chat to random strangers";
+	    		}
+	    		requestStats();
 	    		break;
 	    	case "id":
 	    		client.self.id = data.id;
@@ -107,11 +118,13 @@ function connect(){
 	});
 	$("#send_picture").click(function(result){
 		bootbox.prompt("Enter picture URL...", function(result){
-			sendPicture(result);
+			if(result){
+				console.log("sending picture: " + result);
+				ws.send(JSON.stringify({"type": "picture", "url": escape(result), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
+			}
 		});
 	});
 	$("#disconnect").click(function(){
-		console.log("Disconnecting from partner...");
 		disconnect();
 	});
 	$(document).keydown(function (e) {
@@ -121,26 +134,21 @@ function connect(){
 	});
 
 	/* ========== FUNCTIONS ========== */
-	function escapeMessage(message){
+	function escape(message){
 		return $("<div/>").text(message).html();
 	}
 	function pad(n) {
 	    return (n < 10) ? ("0" + n) : n;
 	}
 	function sendMessage(message) {
-		ws.send(JSON.stringify({"type": "message", "message": escapeMessage(message), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
-	}
-	function sendPicture(url) {
-		if(url){
-			ws.send(JSON.stringify({"type": "picture", "url": escapeMessage(url), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
-		}
+		ws.send(JSON.stringify({"type": "message", "message": escape(message), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	}
 	function requestClient(){
 		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash}}));
 		console.log("Requested partner...");
 	}
 	function disconnect(){
-		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "partner": {"id": client.partner.id, "hash": client.partner.hash}}));
+		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 		console.log("Disconnected from partner...");
 	}
 	function requestStats(){
