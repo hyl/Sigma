@@ -110,7 +110,7 @@ wsServer.on("request", function(r){
                 if(checkHash(data.from.id, data.from.hash)){
                     if(request_clients.length === 0) {
                         request_clients.push(data.from.id);
-                        clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
+                        clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available."}));
                     } else{
                         var partner = request_clients[Math.floor(Math.random() * request_clients.length)];
                         var i = request_clients.indexOf(partner);
@@ -123,12 +123,12 @@ wsServer.on("request", function(r){
                     }
                 }else{
                     log("error", "Partner request denied as client hashes are invalid, client notified");
-                    clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your request for a new partner has been denied as your hash and ID do not match. This could mean that someone has attempted to request a new partner on your behalf.", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
+                    clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your request for a new partner has been denied as your hash and ID do not match. This could mean that someone has attempted to request a new partner on your behalf."}));
                 }
                 break;
             case "disconnect":
                 log("info", "Client " + data.from.id + " requesting disconnect from " + data.to.id);
-                send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, message.utf8Data);
+                send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, JSON.stringify({"type": "disconnected", "message": "You've been disconnected. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window."}));
                 break;
             case "stats":
                 log("info", "Client " + data.from.id + " requesting stats");

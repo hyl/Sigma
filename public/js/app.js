@@ -6,7 +6,7 @@ $("#start_chat").click(function(){
 	});
 });
 function connect(){
-	var ws = new WebSocket('ws://109.74.195.222:8888', 'echo-protocol');
+	var ws = new WebSocket('ws://' + location.host + ':8888', 'echo-protocol');
 	var focused;
 	var unread = 0;
 	/* ========== WEBSOCKET STUFF ========== */
@@ -88,7 +88,7 @@ function connect(){
 	    			minutes = pad(time.getMinutes());
 	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>System:</b> ' + data.message + '</li>');
 	    		setDisabled(true);
-	    		requestClient();
+	    		setTimeout(requestClient, 3000);
 	    		break;
 	    	case "stats":
 	    		$('#clients').text(data.user_count);
@@ -125,7 +125,7 @@ function connect(){
 			$('#message').val('');
 		}
 	    if (!intervalId) {
-	        intervalId= setInterval(function() {
+	        intervalId = setInterval(function() {
 	            ws.send(JSON.stringify({"type": "typing", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	        }, 3000);
 	    }
