@@ -1,20 +1,31 @@
-var http = require('http'),
-    crypto = require('crypto');
+var http = require("http"),
+    crypto = require("crypto"),
+    clc = require("cli-color"),
+    success = clc.bgGreen,
+    info = clc.bgBlue,
+    error = clc.bgRed,
+    stats = clc.bgYellow,
+    salt = crypto.randomBytes(16).toString("base64"),
+    count = 0,
+    messages = 0,
+    clients = {},
+    request_clients = [];
+
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Connection": "Upgrade"});
     response.end();
 });
 server.listen(8888, function() {
-    console.log((new Date()) + ' Server is listening on port 8888');
+    log("success", "Server is listening on port 8888");
 });
 
-var WebSocketServer = require('websocket').server;
+var WebSocketServer = require("websocket").server;
 wsServer = new WebSocketServer({
     httpServer: server
 });
 
 function md5(string) {
-  return crypto.createHash('md5').update(string).digest('hex');
+  return crypto.createHash("md5").update(string).digest("hex");
 }
 
 function checkHash(id, hash) {
@@ -25,50 +36,67 @@ function checkHash(id, hash) {
     }
 }
 
-var salt = crypto.randomBytes(128).toString('base64');
-var count = 0;
-var clients = {};
-var request_clients = [];
-var messages = [];
+function log(type, message){
+    switch(type){
+        case "success":
+            console.log(new Date() + " " + success("[SUCCESS]") + " " + message);
+            break;
+        case "info":
+            console.log(new Date() + " " + info("[INFO]") + " " + message);
+            break;
+        case "error":
+            console.log(new Date() + " " + error("[ERROR]") + " " + message);
+            break;
+        case "stats":
+            console.log(new Date() + " " + stats("[STATS]") + " " + message);
+            break;
+    }
+    
+}
+ 
+function send(from, to, message){
+    if(from.id == "server"){
+        if(clients[to.id]){
+            clients[to.id].sendUTF(message);
+        } else {
+            log("error", "Server attempted to send a request to " + to.id + " which does not exist");
+        }
+    } else {
+        if(checkHash(from.id, from.hash) && checkHash(to.id, to.hash)){
+            if(clients[to.id]){
+                clients[to.id].sendUTF(message);
+                clients[from.id].sendUTF(message);
+                messages++;
+            } else {
+                log("error", "Client " + from.id + " attempted to send a request to " + to.id + " which does not exist");
+                clients[from.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected because your partner closed their browser window. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window."}));
+            }
+        } else {
+            log("error", "Client " + from.id + " attempted to send to a request with an invalid hash to " + to.id);
+            clients[from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your client/partner hash does not match so your message could not be sent. If this error continutes please refresh your page."}));
+        }
+    }
+}
 
-console.log((new Date()) + ' Salt for this session is ' + salt);
+log("info", "Salt for this session is " + salt);
 
-wsServer.on('request', function(r){
-    var connection = r.accept('echo-protocol', r.origin);
+wsServer.on("request", function(r){
+    var connection = r.accept("echo-protocol", r.origin);
 
     var id = count++;
 
     clients[id] = connection;
-    console.log((new Date()) + ' Connection accepted [' + id + ']');
+    log("success", "Connection accepted for client " + id);
     clients[id].sendUTF(JSON.stringify({"type": "id", "id": id, "hash": md5(salt+id)}));
 
-    connection.on('message', function(message) {
+    connection.on("message", function(message) {
         var data = JSON.parse(message.utf8Data);
         switch(data.type){
             case "message" || "picture":
-                var contents;
-                if(data.type == message){
-                    contents = data.message;
-                }else{
-                    contents = data.url;
-                }
-                console.log((new Date()) + ' New ' + data.type + ' sent from ' + data.from.id + ' to ' + data.to.id + ': ' + data.message);
-                if(checkHash(data.from.id, data.from.hash) && checkHash(data.to.id, data.to.hash)){
-                    if(clients[data.to.id]){
-                        clients[data.to.id].sendUTF(message.utf8Data);
-                        clients[data.from.id].sendUTF(message.utf8Data);
-                        messages.push(message.uft8Data);
-                    }else{
-                        clients[data.from.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected because your partner closed their browser window. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
-                    }
-                }else{
-                    console.log((new Date()) + ' Client hashes invalid, alerting sender and intended recipient.');
-                    clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Our system has detected that you attempted to reroute your message by modifying the Javascript variables. This is not allowed, and subsequent attempts may result in a ban. The user you attempted to contact has also been notified.", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
-                    clients[data.to.id].sendUTF(JSON.stringify({"type": "message", "message": "Someone you are not chatting with just attempted to send you a message by exploiting our system, however we detected it and blocked the message. If you recieve any subsequent messages that seem unusual, please be sure to report them.", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
-                } 
+                send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, message.utf8Data); 
                 break;
             case "requestpartner":
-                console.log((new Date()) + ' Client ' + data.from.id + ' requesting new partner.');
+                log("info", "Client " + data.from.id + " requesting new partner.");
                 if(checkHash(data.from.id, data.from.hash)){
                     if(request_clients.length === 0) {
                         request_clients.push(data.from.id);
@@ -79,60 +107,36 @@ wsServer.on('request', function(r){
                         if(i != -1) {
                             request_clients.splice(i, 1);
                         }
-                        console.log((new Date()) + ' Partnered ' + partner + ' with ' + data.from.id + ' and removed ' + partner + ' from request_clients.');
+                        log("success", "Partnered " + partner + " with " + data.from.id + " and removed " + partner + " from request list");
                         clients[data.from.id].sendUTF(JSON.stringify({"type": "partner", "id": partner, "hash": md5(salt+partner)}));
                         clients[partner].sendUTF(JSON.stringify({"type": "partner", "id": data.from.id, "hash": md5(salt+data.from.id)}));
                     }
                 }else{
-                    console.log((new Date()) + ' Client hash invalid, request refused and client notified.');
+                    log("error", "Partner request denied as client hashes are invalid, client notified");
                     clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your request for a new partner has been denied as your hash and ID do not match. This could mean that someone has attempted to request a new partner on your behalf.", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
                 }
                 break;
             case "disconnect":
-                console.log((new Date()) + ' Client ' + data.from.id + ' requesting disconnect from ' + data.partner.id);
-                if(checkHash(data.from.id, data.from.hash) && checkHash(data.partner.id, data.partner.hash)){
-                    clients[data.from.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
-                    clients[data.partner.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window.", "from": {"id": "system", "hash": ""}, "to": {"id": data.partner.id, "hash": ""}}));
-                }else{
-                    console.log((new Date()) + ' Client hashes invalid, alerting sender and intended recipient.');
-                    clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Our system has detected that you attempted to disconnect someone other than yourself. This is against the rules, and further attempts will result in a ban. The person you attempted to disconnect has been notified.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
-                    clients[data.partner.id].sendUTF(JSON.stringify({"type": "message", "message": "Someone you are not chatting with just attempted disconnect from your current partner by exploiting our system, however we detected it and blocked it.", "from": {"id": "system", "hash": ""}, "to": {"id": data.partner.id, "hash": ""}}));
-                }
+                log("info", "Client " + data.from.id + " requesting disconnect from " + data.to.id);
+                send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, message.uft8Data);
                 break;
             case "stats":
-            	console.log((new Date()) + ' Client ' + data.from.id + ' requesting stats');
-            	if(checkHash(data.from.id, data.from.hash)){
-            		clients[data.from.id].sendUTF(JSON.stringify({"type": "stats", "user_count": Object.keys(clients).length, "message_count": messages.length, "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
-            	}else{
-            		console.log((new Date()) + ' Client hash invalid, request refused and client notified.');
-            		clients[data.from.id].sendUTF(JSON.stringify({"type": "message", "message": "Your request for stats has been denied as your hash and ID do not match.", "from": {"id": "system", "hash": ""}, "to": {"id": data.from.id, "hash": ""}}));
-            	}
+                log("info", "Client " + data.from.id + " requesting stats");
+                send({"id": "server"}, {"id": data.from.id}, JSON.stringify({"type": "stats", "user_count": Object.keys(clients).length, "message_count": messages.length}));
                 break;
             case "typing":
-                console.log((new Date()) + ' Client ' + data.from.id + ' is typing, while chatting to ' + data.to.id);
-                if(checkHash(data.from.id, data.from.hash) && checkHash(data.to.id, data.to.hash)){
-                    clients[data.to.id].sendUTF(JSON.stringify({"type": "typing", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
-                }else{
-                    console.log((new Date()) + ' Client hashes invalid, rejecting status and taking no further action.');
-                }
-                break;
-            case "read":
-                console.log((new Date()) + ' Client ' + data.from.id + ' has read all messages from ' + data.to.id);
-                if(checkHash(data.from.id, data.from.hash) && checkHash(data.to.id, data.to.hash)){
-                    clients[data.to.id].sendUTF(JSON.stringify({"type": "read", "from": {"id": "system", "hash": ""}, "to": {"id": data.to.id, "hash": ""}}));
-                }else{
-                    console.log((new Date()) + ' Client hashes invalid, rejecting status and taking no further action.');
-                }
+                log("info", "Client " + data.from.id + " is typing while in a conversation with " + data.to.id);
+                send({"id": "server"}, {"id": data.to.id, "hash": data.to.hash}, JSON.stringify({"type": "typing"}));
                 break;
         }
         
     });
-    connection.on('close', function(reasonCode, description) {
+    connection.on("close", function(reasonCode, description) {
         delete clients[id];
-        console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+        log("info", "Client " + connection.remoteAddress + " disconnected");
     });
 });
 
 setInterval(function() {
-	console.log((new Date()) + ' Stats: ' + Object.keys(clients).length + ' users, ' + messages.length + ' messages.');
-}, 10000);
+    log("stats", "Stats: " + Object.keys(clients).length + " users, " + messages + " messages");
+}, 30000);
