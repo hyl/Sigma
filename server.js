@@ -118,8 +118,8 @@ wsServer.on("request", function(r){
                             request_clients.splice(i, 1);
                         }
                         log("success", "Partnered " + partner + " with " + data.from.id + " and removed " + partner + " from request list");
-                        clients[data.from.id].sendUTF(JSON.stringify({"type": "partner", "id": partner, "hash": md5(salt+partner)}));
-                        clients[partner].sendUTF(JSON.stringify({"type": "partner", "id": data.from.id, "hash": md5(salt+data.from.id)}));
+                        send({"id": "server"}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner, "hash": md5(salt+partner)}));
+                        send({"id": "server"}, {"id": partner}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": md5(salt+data.from.id)}));
                     }
                 }else{
                     log("error", "Partner request denied as client hashes are invalid, client notified");

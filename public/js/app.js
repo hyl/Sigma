@@ -20,7 +20,7 @@ function connect(){
 	    setDisabled(true);
 	    break;
 	}
-	var client = {"self": {"id": null, "hash": null}, "partner": {"id": null, "hash": null}};
+	var client = {"self": {"id": null, "hash": null}, "partner": {"id": null, "hash": null}, "automessage": {"age": null, "sex": null, "location": null, "name": null, "email": null, "kik": null, "skype": null}};
 	ws.addEventListener("message", function(e) {
 		(e);
 		var data = JSON.parse(e.data);
@@ -55,12 +55,15 @@ function connect(){
 	    		}else{
 	    			from = "System";
 	    		}
-	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> <img src="' + data.url + '" alt="What is the meaning of life?"></li>');
+	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> <img src="' + data.url + '" alt="What is the meaning of life?" width="100px;" height="auto"></li>');
 	    		if(!focused){
 	    			unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
 	    		}
 	    		requestStats();
+	    		break;
+	    	case "automessage":
+	    		// Handle automessage here
 	    		break;
 	    	case "id":
 	    		client.self.id = data.id;
@@ -77,6 +80,7 @@ function connect(){
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
 	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello!");
 	    		setDisabled(false);
+	    		sendAutoMessage();
 	    		break;
 	    	case "status":
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
@@ -96,6 +100,9 @@ function connect(){
 	    		break;
 	    	case "typing":
 	    		$('#typing').fadeIn('fast');
+	    		setTimeout(function(){
+	    			$('#typing').fadeOut('fast');
+	    		}, 3000);
 	    		break;
 		}
 	});
@@ -159,6 +166,9 @@ function connect(){
 	}
 	function sendMessage(message) {
 		ws.send(JSON.stringify({"type": "message", "message": escape(message), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
+	}
+	function sendAutoMessage(){
+		ws.send(JSON.stringify({"type": "automessage", "contents": JSON.stringify(client.automessage), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	}
 	function requestClient(){
 		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash}}));
