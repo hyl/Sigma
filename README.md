@@ -12,8 +12,10 @@ For more information please see the website at http://ovalbit.github.io/Sigma/
 Requirements
 ============
   * Node.js
-    * Crypto
+    * http
+    * crypto
     * cli-color
+    * websocket
   * WebSocket-enabled browser
   
 Installation
