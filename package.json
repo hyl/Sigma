@@ -11,7 +11,11 @@
     }
   ],
   "dependencies": {
-    "crypto": "latest"
+    "http": "latest",
+    "crypto": "latest",
+    "cli-color": "latest",
+    "express": "latest",
+    "websocket": "latest"
   },
   "licenses": [
     {
