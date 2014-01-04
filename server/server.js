@@ -1,6 +1,10 @@
 var http = require("http"),
     crypto = require("crypto"),
     clc = require("cli-color"),
+    express = require("express"),
+    WebSocketServer = require("websocket").server,
+    app = express(),
+    server = app.listen(8888),
     success = clc.bgGreen,
     info = clc.bgBlue,
     error = clc.bgRed,
@@ -12,15 +16,17 @@ var http = require("http"),
     request_clients = [],
     stat_interval = 10000;
 
+log("success", "WebSocket server listening on port 8888, interface listening on port 80");
+
+/*
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Connection": "Upgrade"});
     response.end();
 });
-server.listen(8888, function() {
-    log("success", "Server is listening on port 8888");
-});
+*/
 
-var WebSocketServer = require("websocket").server;
+app.use(express.static(__dirname + "/public"));
+
 wsServer = new WebSocketServer({
     httpServer: server
 });
@@ -122,7 +128,7 @@ wsServer.on("request", function(r){
                 break;
             case "disconnect":
                 log("info", "Client " + data.from.id + " requesting disconnect from " + data.to.id);
-                send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, message.uft8Data);
+                send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, message.utf8Data);
                 break;
             case "stats":
                 log("info", "Client " + data.from.id + " requesting stats");

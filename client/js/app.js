@@ -22,7 +22,7 @@ function connect(){
 	}
 	var client = {"self": {"id": null, "hash": null}, "partner": {"id": null, "hash": null}};
 	ws.addEventListener("message", function(e) {
-		console.log(e);
+		(e);
 		var data = JSON.parse(e.data);
 		switch(data.type){
 			case "message":
@@ -65,7 +65,7 @@ function connect(){
 	    	case "id":
 	    		client.self.id = data.id;
 	    		client.self.hash = data.hash;
-	    		console.log("Assigned ID of " + client.self.id + " with hash of " + data.hash);
+	    		("Assigned ID of " + client.self.id + " with hash of " + data.hash);
 	    		$("#status").html("<strong>Connected to the chat server, just waiting for a partner. Hold tight!</strong>");
 	    		requestClient();
 	    		requestStats();
@@ -73,7 +73,7 @@ function connect(){
 	    	case "partner":
 	    		client.partner.id = data.id;
 	    		client.partner.hash = data.hash;
-	    		console.log("Assigned partner with an ID of " + client.partner + " with hash of " + data.hash);
+	    		("Assigned partner with an ID of " + client.partner + " with hash of " + data.hash);
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
 	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello!");
 	    		setDisabled(false);
@@ -109,17 +109,34 @@ function connect(){
 		$(this).parent().addClass("col-md-8").removeClass("col-md-12");
 		$('#disconnect, #send_picture').show();
 	});
+
+	var timeoutId,
+		intervalId;
+
+	function stopMyInterval() {
+	    clearInterval(intervalId);
+	    intervalId = null;
+	}
+
 	$("#message").keypress(function(event){
-		if(event.keyCode == 13){
-			sendMessage($('#message').val());
+	    clearTimeout(timeoutId);
+	    if(event.keyCode == 13 && $("#message").val() != ""){
+	    	sendMessage($('#message').val());
 			$('#message').val('');
 		}
-		ws.send(JSON.stringify({"type": "typing", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
-	});
+	    if (!intervalId) {
+	        intervalId= setInterval(function() {
+	            ws.send(JSON.stringify({"type": "typing", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
+	        }, 3000);
+	    }
+
+	    timeoutId = setTimeout(stopMyInterval, 500);
+	}).blur(stopMyInterval);
+
 	$("#send_picture").click(function(result){
 		bootbox.prompt("Enter picture URL...", function(result){
 			if(result){
-				console.log("sending picture: " + result);
+				("sending picture: " + result);
 				ws.send(JSON.stringify({"type": "picture", "url": escape(result), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 			}
 		});
@@ -145,11 +162,9 @@ function connect(){
 	}
 	function requestClient(){
 		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash}}));
-		console.log("Requested partner...");
 	}
 	function disconnect(){
 		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
-		console.log("Disconnected from partner...");
 	}
 	function requestStats(){
     	ws.send(JSON.stringify({"type": "stats", "from": {"id": client.self.id, "hash": client.self.hash}}));
