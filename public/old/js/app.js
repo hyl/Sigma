@@ -1,13 +1,13 @@
-$("#chat, #typing, #footer").hide();
-$("#startchat").click(function(){
-	$("#intro").fadeOut(function(){
-		$("#chat, #footer").fadeIn();
+$("#active, #typing").hide();
+$("#start_chat").click(function(){
+	$("#inactive").fadeOut(function(){
+		$("#active").fadeIn();
 			connect();
 	});
 });
-var client = {"self": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}, "settings": {"hide_buttons": true}}, "partner": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}};
+var client = {"self": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}, "partner": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}};
 function connect(){
-	var ws = new WebSocket('ws://109.74.195.222:8888', 'echo-protocol');
+	var ws = new WebSocket('ws://' + location.host + ':8888', 'echo-protocol');
 	var focused;
 	var unread = 0;
 	/* ========== WEBSOCKET STUFF ========== */
@@ -26,7 +26,6 @@ function connect(){
 		var data = JSON.parse(e.data);
 		switch(data.type){
 			case "message":
-				window.scrollTo(0,document.body.scrollHeight);
 				var time = new Date(),
 	    			hours = pad(time.getHours()),
 	    			minutes = pad(time.getMinutes());
@@ -38,7 +37,7 @@ function connect(){
 	    		}else{
 	    			from = "System";
 	    		}
-	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> ' + replaceURLWithHTMLLinks(data.message) + '</li>');
+	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> ' + data.message + '</li>');
 	    		if(!focused){
 	    			unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
@@ -46,7 +45,6 @@ function connect(){
 	    		requestStats();
 	    		break;
 	    	case "picture":
-	    		window.scrollTo(0,document.body.scrollHeight);
 	    		var time = new Date(),
 	    			hours = pad(time.getHours()),
 	    			minutes = pad(time.getMinutes());
@@ -64,6 +62,9 @@ function connect(){
 	    		}
 	    		requestStats();
 	    		break;
+	    	case "automessage":
+	    		// Handle automessage here
+	    		break;
 	    	case "id":
 	    		client.self.id = data.id;
 	    		client.self.hash = data.hash;
@@ -75,11 +76,11 @@ function connect(){
 	    	case "partner":
 	    		client.partner.id = data.id;
 	    		client.partner.hash = data.hash;
-	    		console.log(data);
 	    		("Assigned partner with an ID of " + client.partner + " with hash of " + data.hash);
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
 	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello!");
 	    		setDisabled(false);
+	    		sendAutoMessage();
 	    		break;
 	    	case "status":
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
@@ -94,7 +95,8 @@ function connect(){
 	    		setTimeout(requestClient, 3000);
 	    		break;
 	    	case "stats":
-	    		$("#stats").text(data.user_count + " users, " + data.message_count + " messages");
+	    		$('#clients').text(data.user_count);
+	    		$('#messages').text(data.message_count);
 	    		break;
 	    	case "typing":
 	    		$('#typing').fadeIn('fast');
@@ -107,16 +109,12 @@ function connect(){
 
 	/* ========== UI STUFF ========== */
 	$("#message").focus(function(){
-		if(client.self.settings.hide_buttons){
-			$('#disconnect, #send_picture').hide();
-			$('#message').parent().addClass("col-md-12").removeClass("col-md-8");
-		}
+		$('#disconnect, #send_picture').hide();
+		$('#message').parent().addClass("col-md-12").removeClass("col-md-8");
 	});
 	$("#message").blur(function(){
-		if(client.self.settings.hide_buttons){
-			$('#message').parent().addClass("col-md-8").removeClass("col-md-12");
-			$('#disconnect, #send_picture').show();
-		}
+		$(this).parent().addClass("col-md-8").removeClass("col-md-12");
+		$('#disconnect, #send_picture').show();
 	});
 
 	var timeoutId,
@@ -169,8 +167,11 @@ function connect(){
 	function sendMessage(message) {
 		ws.send(JSON.stringify({"type": "message", "message": escape(message), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	}
+	function sendAutoMessage(){
+		ws.send(JSON.stringify({"type": "automessage", "contents": JSON.stringify(client.automessage), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
+	}
 	function requestClient(){
-		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash, "automessage": client.self.automessage}}));
+		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash}}));
 	}
 	function disconnect(){
 		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
@@ -180,10 +181,6 @@ function connect(){
     }
 	function setDisabled(action){
 		$("#message, #disconnect, #send_picture").prop('disabled', action);
-	}
-	function replaceURLWithHTMLLinks(text) {
-	    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-	    return text.replace(exp,"<a href='$1' target='_blank'>$1</a>"); 
 	}
 	function onBlur() {
 		focused = false;

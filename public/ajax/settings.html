@@ -1,0 +1,36 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4 class="modal-title">Settings</h4>
+    </div>
+    <div class="modal-body">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="hide_buttons">
+          Hide Disconnect and Send Picture buttons while typing a message
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary" id="save">Save</button>
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+<script>
+  if(client.self.settings.hide_buttons){
+    $("#hide_buttons").prop("checked", true);
+  }else{
+    $("#hide_buttons").prop("checked", false);
+  }
+  $("#save").click(function(){
+    if($("#hide_buttons").prop("checked")){
+      client.self.settings.hide_buttons = true;
+    }else{
+      client.self.settings.hide_buttons = false;
+    }
+    alert("Settings saved. Please note that they are still in Beta so may not work very well. Also, your settings will be lost if you reload the page.");
+  });
+</script>

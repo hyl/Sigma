@@ -1,105 +1,162 @@
+
 <!DOCTYPE html>
 <html lang="en">
-    
-    <head>
-        <meta charset="utf-8">
-        <title>Σigma - Chat to random strangers</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link href="http://bootswatch.com/flatly/bootstrap.min.css" rel="stylesheet">
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-        <!--[if lt IE 9]>
-            <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"></script>
-        <![endif]-->
-        <!--[if lt IE 9]>
-            <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"></script>
-        <![endif]-->
-    <link rel="stylesheet" href="http://bootswatch.com/flatly/bootstrap.min.css">
-    <style>
-        .tiny{
-            font-size: 10px;
-        }
-    </style>
-    </head>
-    
-    <body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Σigma (pronounced Sigma) is an online anonymous chat website. You get connected to a random stranger from anywhere in the world and we let you have a one-one chat.">
+    <meta name="author" content="Benedict Lewis">
+
+    <title>Σigma - Chat to random strangers</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don"t actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div id="wrap">
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
-            <br>
-            <div class="navbar navbar-default navbar-static-top navbar-inverse">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
-                        <span class="icon-bar"></span><span class="icon-bar"></span>
-                    </button><a class="navbar-brand" href="#">Σigma</a>
-                </div>
-                <div class="collapse navbar-collapse navbar-ex1-collapse">
-                    <p class="navbar-text pull-right"><span id="clients">loading...</span> people online, <span id="messages">loading...</span> messages sent</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12" id="inactive">
-                    <div class="jumbotron">
-                        <div class="container">
-                            <h1>Σigma</h1>
-                            <p>
-                                sigma |ˈsɪgmə|<br />
-                                <b>noun</b><br />
-                                1) <em>the eighteenth letter of the Greek alphabet ( Σ, σ), transliterated as ‘s’.</em><br />
-                                2) <em>a free anonymous online chat platform*.</em>
-                            </p>
-                            <p class="tiny">*Not actual definition</p>
-                            <button class="btn btn-primary btn-lg" id="start_chat">Start chatting now!</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12" id="active">
-                    <div class="panel panel-primary">
-                        <ul class="list-group" id="chat">
-                            <li class="list-group-item" id="status"></li>
-                        </ul>
-                    </div>
-                    <p id="typing">Your partner is typing...</p>
-                    <hr />
-                    <div class="col-md-2">
-                        <button type="button" id="disconnect" class="btn btn-danger btn-block">Disconnect</button>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" id="send_picture" class="btn btn-primary btn-block">Send a picture</button>
-                    </div>
-                    <div class="col-md-8">
-                        <input class="form-control" id="message" placeholder="Enter your message and hit enter..." type="text" val="test" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <hr>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <p class="text-center">Copyright © 2013 Benedict Lewis / OvalBit
-                        <br>
-                    </p>
-                </div>
-            </div>
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Σigma</a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <p class="navbar-text" id="typing">Your partner is typing...</p>
+              <p class="navbar-text" id="stats">0 users, 0 messages</p>
+              <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="glyphicon glyphicon-cog"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a data-toggle="modal" href="ajax/stats.html" data-target="#modal">Stats</a></li>
+                  <li><a href="mailto:benedict@ovalbit.com">Contact</a></li>
+                  <li><a data-toggle="modal" href="ajax/automessage.html" data-target="#modal">Edit Automessage</a></li>
+                  <li><a data-toggle="modal" href="ajax/settings.html" data-target="#modal">Settings</a></li>
+                  <li class="divider"></li>
+                  <li><a data-toggle="modal" href="ajax/admin.html" data-target="#modal">Admin Zone</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
         </div>
-        <script src="js/bootbox.min.js"></script>
-        <script src="js/app.js"></script>
-        <!--
-        <div class="alert alert-info">
-            <p>Your partner is trying to send you a picture. Please either accept or decline it. If you do not decide within 30 seconds it will automatically be declined.</p>
-            <br />
-            <div class="row">
-                <div class="col-md-6">
-                    <button type="button" class="btn btn-success btn-block">Accept</button>
-                </div>
-                <div class="col-md-6">
-                     <button type="button" class="btn btn-danger btn-block">Decline (30)</button>
-                </div>
+      </div>
+      <div id="intro">
+        <div class="jumbotron">
+          <div class="container">
+            <h1>Σigma</h1>
+            <p>
+              sigma |ˈsɪgmə|<br />
+              <b>noun</b><br />
+              1) <em>the eighteenth letter of the Greek alphabet ( Σ, σ), transliterated as ‘s’.</em><br />
+              2) <em>a free anonymous online chat platform*.</em>
+            </p>
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary btn-lg" id="startchat">Stat chatting now &raquo;</button>
+              <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-cog"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a data-toggle="modal" href="ajax/automessage.html" data-target="#modal">Edit Automessage <span class="label label-success">Beta</span></a></li>
+                <li><a data-toggle="modal" href="ajax/settings.html" data-target="#modal">Settings</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Set Interests <span class="label label-primary">Coming Soon</span></a></li>
+                <li><a href="#">Set Age <span class="label label-primary">Coming Soon</span></a></li>
+                <li class="divider"></li>
+                <li><a data-toggle="modal" href="ajax/admin.html" data-target="#modal">Admin Zone</a></li>
+              </ul>
             </div>
+          </div>
         </div>
-        -->
-</body>
+
+        <div class="container">
+          <!-- Example row of columns -->
+          <div class="row">
+            <div class="col-md-4">
+              <h2>What is Σigma?</h2>
+              <p>Σigma (pronounced Sigma) is an online anonymous chat website. You get connected to a random stranger from anywhere in the world and we let you have a one-one chat.</p>
+              <p>Σigma is free to use, and has no adverts. All server costs are covered by the creator, <a href="http://www.reddit.com/u/roomzinchina" target="_blank">/u/roomzinchina</a>. However, donations are nice.</p>
+              <p>Σigma is also open source, and you can find all the code on GitHub. A huge thanks goes out to all the users which have submitted code and helped us along the way. You"re awesome.</p>
+            </div>
+            <div class="col-md-4">
+              <h2>Is it anonymous?</h2>
+              <p>Yes, Σigma is totally anonymous. The person you talk with won"t know anything about you or your computer (unless you tell them, which we don"t recommend).</p>
+              <p>While the person you are talking to does not know anything about you or your computer, we keep a record of all messages for up to one year.</p>
+              <p>Our logs can contain information including: your IP address, your browser name (Chrome/Firefox/Safari etc), messages and pictures you send, and the number of messages you send.</p>
+           </div>
+            <div class="col-md-4">
+              <h2>What are the rules?</h2>
+              <p>We have written the rules to be as simple as possible. Please make sure you read them before starting.</p>
+              <ol>
+                <li>People under the age of 18 must have permission from a legal guardian before accessing/using Σigma</li>
+                <li>The Internet is a dangerous place. We do not allow users under the age of 13 to use Σigma. <b>No exceptions.</b></li>
+                <li>We do not tolerate abusive language. Swearing/cursing is permitted (to an extent), however phrases like <code>go kill yourself</code> will result in immediate bans.</li>
+              </ol>
+            </div>
+          </div>
+
+          <hr>
+
+          <footer>
+            <p>By <a href="http://www.reddit.com/u/roomzinchina" target="_blank">/u/roomzinchina</a>, feel free to <a href="http://www.github.com/OvalBit/Sigma" target="_blank">grab the code</a> or <a href="http://github.com/OvalBit/Sigma/issues/new" target="_blank">submit a bug report</a>.</p>
+          </footer>
+        </div> <!-- /container -->
+      </div>
+
+      <div class="contained">
+        <div id="chat">
+          <li class="list-group-item" id="status">We're just loading the chat application now. Wait a minute.</li>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+        <div class="col-md-12">
+          <div class="col-md-2">
+              <button type="button" id="disconnect" class="btn btn-danger btn-block">Disconnect</button>
+          </div>
+          <div class="col-md-2">
+              <button type="button" id="send_picture" class="btn btn-primary btn-block">Send a picture</button>
+          </div>
+          <div class="col-md-8">
+              <input class="form-control" id="message" placeholder="Enter your message and hit enter..." type="text" val="test" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for AJAX Content, loaded with data-api -->
+    <div class="modal fade" id="modal"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/bootbox.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script>
+    $("body").on("hidden.bs.modal", ".modal", function () {
+      $(this).removeData("bs.modal");
+    });
+    </script>
+  </body>
 </html>

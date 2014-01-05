@@ -9,6 +9,7 @@ var http = require("http"),
     info = clc.bgBlue,
     error = clc.bgRed,
     stats = clc.bgYellow,
+    raw = clc.bgWhite.black,
     salt = crypto.randomBytes(16).toString("base64"),
     count = 0,
     messages = 0,
@@ -57,25 +58,33 @@ function log(type, message){
         case "stats":
             console.log(new Date() + " " + stats("[STATS]") + " " + message);
             break;
+        case "raw":
+            console.log(new Date() + " " + raw("[RAW]") + " " + message);
+            break;
     }
     
 }
  
 function send(from, to, message){
-    if(from.id == "server"){
+    if(from.id == "server" && from.hash == salt){
         if(clients[to.id]){
             clients[to.id].sendUTF(message);
         } else {
-            log("error", "Server attempted to send a request to " + to.id + " which does not exist");
+            log("error", "Server attempted to send a request to " + to.id + " which does not exist, using salt " + from.hash);
         }
     } else {
         if(checkHash(from.id, from.hash) && checkHash(to.id, to.hash)){
             if(clients[to.id]){
+                log("raw", message);
                 clients[to.id].sendUTF(message);
                 clients[from.id].sendUTF(message);
                 messages++;
             } else {
                 log("error", "Client " + from.id + " attempted to send a request to " + to.id + " which does not exist");
+                var i = request_clients.indexOf(to.id);
+                if(i != -1) {
+                    request_clients.splice(i, 1);
+                }
                 clients[from.id].sendUTF(JSON.stringify({"type": "disconnected", "message": "You've been disconnected because your partner closed their browser window. Please wait, we're reconnecting you to a new partner now. If you don't want to be reconnected, just close your browser window."}));
             }
         } else {
@@ -100,9 +109,6 @@ wsServer.on("request", function(r){
         var data = JSON.parse(message.utf8Data);
         switch(data.type){
             case "message": case "picture":
-                if(data.type == "picture"){
-                    log("success", "Recieved picture with URL of " + data.url + ", sending on...");
-                }
                 send({"id": data.from.id, "hash": data.from.hash}, {"id": data.to.id, "hash": data.to.hash}, message.utf8Data); 
                 break;
             case "requestpartner":
@@ -118,8 +124,8 @@ wsServer.on("request", function(r){
                             request_clients.splice(i, 1);
                         }
                         log("success", "Partnered " + partner + " with " + data.from.id + " and removed " + partner + " from request list");
-                        send({"id": "server"}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner, "hash": md5(salt+partner)}));
-                        send({"id": "server"}, {"id": partner}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": md5(salt+data.from.id)}));
+                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner, "hash": md5(salt+partner)}));
+                        send({"id": "server", "hash": salt}, {"id": partner}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": md5(salt+data.from.id)}));
                     }
                 }else{
                     log("error", "Partner request denied as client hashes are invalid, client notified");
@@ -132,11 +138,11 @@ wsServer.on("request", function(r){
                 break;
             case "stats":
                 log("info", "Client " + data.from.id + " requesting stats");
-                send({"id": "server"}, {"id": data.from.id}, JSON.stringify({"type": "stats", "user_count": Object.keys(clients).length, "message_count": messages}));
+                send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "stats", "user_count": Object.keys(clients).length, "message_count": messages}));
                 break;
             case "typing":
                 log("info", "Client " + data.from.id + " is typing while in a conversation with " + data.to.id);
-                send({"id": "server"}, {"id": data.to.id, "hash": data.to.hash}, JSON.stringify({"type": "typing"}));
+                send({"id": "server", "hash": salt}, {"id": data.to.id, "hash": data.to.hash}, JSON.stringify({"type": "typing"}));
                 break;
         }
         

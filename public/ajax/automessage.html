@@ -1,0 +1,70 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4 class="modal-title">Automessage</h4>
+    </div>
+    <div class="modal-body">
+      <div class="panel panel-default">
+        <div class="panel-heading">About Me</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="input-group">
+                <span class="input-group-addon">Name</span>
+                <input type="text" class="form-control" id="name" placeholder="John Doe">
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="input-group">
+                <span class="input-group-addon">ASL</span>
+                <input type="text" class="form-control" id="asl" placeholder="16/M/UK">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Contact Info</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-4">
+              <div class="input-group">
+                <span class="input-group-addon">Email</span>
+                <input type="text" class="form-control" id="email" placeholder="john@gmail.com">
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <div class="input-group">
+                <span class="input-group-addon">Kik</span>
+                <input type="text" class="form-control" id="kik" placeholder="john.doe">
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <div class="input-group">
+                <span class="input-group-addon">Skype</span>
+                <input type="text" class="form-control" id="skype" placeholder="john.doe">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-warning"><strong>Warning:</strong> Be careful about giving out personal contact information online. We do not advise that you share your personal email address, <a href="http://grr.la" target="_blank">get a temporary one</a>. If you ever get messages outside of Σigma that make you feel uncomfortable, block the sender.</div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary" id="save">Save</button>
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+<script>
+  $("#save").click(function(){
+    client.self.automessage.name = $("#name").val();
+    client.self.automessage.asl = $("#asl").val();
+    client.self.automessage.email = $("#email").val();
+    client.self.automessage.kik = $("#kik").val();
+    client.self.automessage.skype = $("#skype").val();
+    alert("Automessage saved. Please note that it is still in Beta so may not work very well. Also, your automessage will be lost if you reload the page.");
+  });
+</script>
