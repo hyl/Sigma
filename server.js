@@ -149,9 +149,14 @@ wsServer.on("request", function(r){
         
     });
     connection.on("close", function(reasonCode, description) {
-
+        if(request_clients[id]){
+            var i = request_clients.indexOf(id);
+            if(i != -1) {
+                request_clients.splice(i, 1);
+            }
+        }
         delete clients[id];
-        log("info", "Client " + connection.remoteAddress + " disconnected");
+        log("info", "Client " + id + " (" + connection.remoteAddress + ") disconnected. Removed from waiting list.");
     });
 });
 
