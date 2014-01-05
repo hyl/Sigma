@@ -77,7 +77,9 @@ function send(from, to, message){
             if(clients[to.id]){
                 log("raw", message);
                 clients[to.id].sendUTF(message);
-                clients[from.id].sendUTF(message);
+                if(clients[from.id]){
+                    clients[from.id].sendUTF(message);
+                }
                 messages++;
             } else {
                 log("error", "Client " + from.id + " attempted to send a request to " + to.id + " which does not exist");
@@ -162,5 +164,5 @@ wsServer.on("request", function(r){
 });
 
 setInterval(function() {
-    log("stats", "Stats: " + Object.keys(clients).length + " users, " + messages + " messages, " + request_clients.length + " users waiting for partner");
+    log("stats", Object.keys(clients).length + " users, " + messages + " messages, " + request_clients.length + " users waiting for partner");
 }, stat_interval);
