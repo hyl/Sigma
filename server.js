@@ -102,7 +102,7 @@ wsServer.on("request", function(r){
     var id = count++;
 
     clients[id] = connection;
-    log("success", "Connection accepted for client " + id);
+    log("success", "Connection accepted for client " + id + " on IP " + clients[id].remoteAddress);
     clients[id].sendUTF(JSON.stringify({"type": "id", "id": id, "hash": md5(salt+id)}));
 
     connection.on("message", function(message) {
@@ -149,17 +149,18 @@ wsServer.on("request", function(r){
         
     });
     connection.on("close", function(reasonCode, description) {
-        if(request_clients[id]){
-            var i = request_clients.indexOf(id);
+        log("info", "Client " + id + " (" + connection.remoteAddress + ") disconnected.");
+        if(request_clients[0]){
+            log("info", "Client " + id + " found in waiting list, now removing...");
+            var i = request_clients.indexOf(request_clients[0]);
             if(i != -1) {
                 request_clients.splice(i, 1);
             }
         }
-        delete clients[id];
-        log("info", "Client " + id + " (" + connection.remoteAddress + ") disconnected. Removed from waiting list.");
+        delete clients[0];
     });
 });
 
 setInterval(function() {
-    log("stats", "Stats: " + Object.keys(clients).length + " users, " + messages + " messages");
+    log("stats", "Stats: " + Object.keys(clients).length + " users, " + messages + " messages, " + request_clients.length + " users waiting for partner");
 }, stat_interval);

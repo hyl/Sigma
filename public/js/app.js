@@ -205,4 +205,8 @@ function connect(){
 		window.onfocus = onFocus;
 		window.onblur = onBlur;
 	}
+
+	setInterval(function() {
+	    requestStats();
+	}, 3000);
 }
