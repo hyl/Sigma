@@ -186,7 +186,7 @@ function connect(){
 	    var exp2 = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
 	    var links = text.replace(exp,"<a href='$1' target='_blank'>$1</a>");
 	    var images = links.replace(exp2, "<img src='$1' alt='$1'>");
-	    return images;
+	    return links;
 	}
 	function onBlur() {
 		focused = false;

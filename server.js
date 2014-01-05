@@ -115,7 +115,8 @@ wsServer.on("request", function(r){
                 log("info", "Client " + data.from.id + " requesting new partner.");
                 if(checkHash(data.from.id, data.from.hash)){
                     if(request_clients.length === 0) {
-                        request_clients.push(data.from.id);
+                        var prep = {"id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage};
+                        request_clients.push(prep);
                         clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available."}));
                     } else{
                         var partner = request_clients[Math.floor(Math.random() * request_clients.length)];
@@ -123,9 +124,9 @@ wsServer.on("request", function(r){
                         if(i != -1) {
                             request_clients.splice(i, 1);
                         }
-                        log("success", "Partnered " + partner + " with " + data.from.id + " and removed " + partner + " from request list");
-                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner, "hash": md5(salt+partner)}));
-                        send({"id": "server", "hash": salt}, {"id": partner}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": md5(salt+data.from.id)}));
+                        log("success", "Partnered " + partner.id + " with " + data.from.id + " and removed " + partner.id + " from request list");
+                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner.id, "hash": partner.hash, "automessage": partner.automessage}));
+                        send({"id": "server", "hash": salt}, {"id": partner.id}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage}));
                     }
                 }else{
                     log("error", "Partner request denied as client hashes are invalid, client notified");
@@ -148,6 +149,7 @@ wsServer.on("request", function(r){
         
     });
     connection.on("close", function(reasonCode, description) {
+
         delete clients[id];
         log("info", "Client " + connection.remoteAddress + " disconnected");
     });
