@@ -183,7 +183,10 @@ function connect(){
 	}
 	function replaceURLWithHTMLLinks(text) {
 	    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-	    return text.replace(exp,"<a href='$1' target='_blank'>$1</a>"); 
+	    var exp2 = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
+	    var links = text.replace(exp,"<a href='$1' target='_blank'>$1</a>");
+	    var images = links.replace(exp2, "<img src='$1' alt='$1'>");
+	    return images;
 	}
 	function onBlur() {
 		focused = false;
