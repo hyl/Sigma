@@ -159,7 +159,7 @@ wsServer.on("request", function(r){
                 request_clients.splice(i, 1);
             }
         }
-        delete clients[0];
+        delete clients[id];
     });
 });
 
