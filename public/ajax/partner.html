@@ -1,0 +1,66 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4 class="modal-title">Your Partner's Automessage</h4>
+    </div>
+    <div class="modal-body">
+      <div class="panel panel-default">
+        <div class="panel-heading">About Me</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="input-group">
+                <span class="input-group-addon">Name</span>
+                <input type="text" class="form-control" id="name" placeholder="Not set" disabled>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="input-group">
+                <span class="input-group-addon">ASL</span>
+                <input type="text" class="form-control" id="asl" placeholder="Not set" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Contact Info</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-4">
+              <div class="input-group">
+                <span class="input-group-addon">Email</span>
+                <input type="text" class="form-control" id="email" placeholder="Not set" disabled>
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <div class="input-group">
+                <span class="input-group-addon">Kik</span>
+                <input type="text" class="form-control" id="kik" placeholder="Not set" disabled>
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <div class="input-group">
+                <span class="input-group-addon">Skype</span>
+                <input type="text" class="form-control" id="skype" placeholder="Not set" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-warning"><strong>Warning:</strong> Σigma makes no attempt to verify any of the above information.</div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+<script>
+  $("#name").val(client.partner.automessage.name);
+  $("#asl").val(client.partner.automessage.asl);
+  $("#email").val(client.partner.automessage.email);
+  $("#kik").val(client.partner.automessage.kik);
+  $("#skype").val(client.partner.automessage.skype);
+</script>

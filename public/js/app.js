@@ -75,10 +75,11 @@ function connect(){
 	    	case "partner":
 	    		client.partner.id = data.id;
 	    		client.partner.hash = data.hash;
+	    		client.partner.automessage = data.automessage;
 	    		console.log(data);
 	    		("Assigned partner with an ID of " + client.partner + " with hash of " + data.hash);
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
-	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello!");
+	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello or <a data-toggle=\"modal\" href=\"ajax/partner.html\" data-target=\"#modal\">view your partners automessage</a>.");
 	    		setDisabled(false);
 	    		break;
 	    	case "status":
