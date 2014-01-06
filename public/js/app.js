@@ -26,7 +26,6 @@ function connect(){
 		var data = JSON.parse(e.data);
 		switch(data.type){
 			case "message":
-				window.scrollTo(0,document.body.scrollHeight);
 				var time = new Date(),
 	    			hours = pad(time.getHours()),
 	    			minutes = pad(time.getMinutes());
@@ -44,9 +43,9 @@ function connect(){
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
 	    		}
 	    		requestStats();
+	    		window.scrollTo(0,document.body.scrollHeight);
 	    		break;
 	    	case "picture":
-	    		window.scrollTo(0,document.body.scrollHeight);
 	    		var time = new Date(),
 	    			hours = pad(time.getHours()),
 	    			minutes = pad(time.getMinutes());
@@ -63,6 +62,7 @@ function connect(){
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
 	    		}
 	    		requestStats();
+	    		window.scrollTo(0,document.body.scrollHeight);
 	    		break;
 	    	case "id":
 	    		client.self.id = data.id;
@@ -182,13 +182,13 @@ function connect(){
 	function setDisabled(action){
 		$("#message, #disconnect, #send_picture").prop('disabled', action);
 	}
-	function replaceURLWithHTMLLinks(text) {
-	    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-	    var exp2 = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
-	    var links = text.replace(exp,"<a href='$1' target='_blank'>$1</a>");
-	    var images = links.replace(exp2, "<img src='$1' alt='$1'>");
-	    return links;
-	}
+	function replaceURLS(text) {
+        var exp = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var exp2 = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
+        var images = text.replace(exp2, "<img src='$1' alt='$1'>");
+        var links = images.replace(exp,"<a href='$1' target='_blank'>$1</a>");
+        return links;
+    }
 	function onBlur() {
 		focused = false;
 	};
