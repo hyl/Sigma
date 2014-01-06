@@ -37,7 +37,7 @@ function connect(){
 	    		}else{
 	    			from = "System";
 	    		}
-	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> ' + replaceURLWithHTMLLinks(data.message) + '</li>');
+	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> ' + replaceURLS(data.message) + '</li>');
 	    		if(!focused){
 	    			unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
