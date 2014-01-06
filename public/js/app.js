@@ -5,7 +5,7 @@ $("#startchat").click(function(){
 			connect();
 	});
 });
-var client = {"self": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}, "settings": {"hide_buttons": true}}, "partner": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}};
+var client = {"self": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}, "settings": {"hide_buttons": true, "native_notification": false}}, "partner": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}};
 function connect(){
 	var ws = new WebSocket('ws://109.74.195.222:8888', 'echo-protocol');
 	var focused;
@@ -41,7 +41,7 @@ function connect(){
 	    		if(!focused){
 	    			unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
-					notify("New message on Σigma", data.message, time());
+					notify("New message on Σigma", data.message);
 	    		}
 	    		requestStats();
 	    		window.scrollTo(0,document.body.scrollHeight);
@@ -186,11 +186,13 @@ function connect(){
 		$(".sys_message, .sys_disconnect, .sys_send_picture").prop('disabled', action);
 	}
 	function replaceURLS(text) {
+        /*
         var links_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         var images_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
         var images = text.replace(exp2, "<img src='$1' alt='$1'>");
         var links = images.replace(exp,"<a href='$1' target='_blank'>$1</a>");
-        return links;
+        */
+        return text;
     }
 	function onBlur() {
 		focused = false;
@@ -201,8 +203,8 @@ function connect(){
 		document.title = "Σigma - Chat to random strangers";
 	};
 
-	function notify(title, body, tag) {
-	    if(!window.Notification && client.self.settings.native_notification = true;) {
+	function notify(title, body) {
+	    if((!window.Notification) && (client.self.settings.native_notification)) {
 	        alert("You seem to have managed to enable native notifications however your browser is not supported. Native notifications have been disabled again.");
 	        return;
 	    }
@@ -216,7 +218,7 @@ function connect(){
 	                    title,
 	                    {
 	                      "body": body,
-	                      "tag": tag
+	                      "tag": new Date().getTime()
 	                    }
 	                );
 	        n.onclick = function() {
