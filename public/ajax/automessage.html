@@ -59,6 +59,12 @@
 </div><!-- /.modal-dialog -->
 
 <script>
+  $("#name").val(client.self.automessage.name);
+  $("#asl").val(client.self.automessage.asl);
+  $("#email").val(client.self.automessage.email);
+  $("#kik").val(client.self.automessage.kik);
+  $("#skype").val(client.self.automessage.skype);
+
   $("#save").click(function(){
     client.self.automessage.name = $("#name").val();
     client.self.automessage.asl = $("#asl").val();

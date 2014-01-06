@@ -107,16 +107,16 @@ function connect(){
 	});
 
 	/* ========== UI STUFF ========== */
-	$("#message").focus(function(){
+	$(".desktop .sys_message").focus(function(){
 		if(client.self.settings.hide_buttons){
-			$('#disconnect, #send_picture').hide();
-			$('#message').parent().addClass("col-md-12").removeClass("col-md-8");
+			$('.desktop .sys_disconnect, .sys_send_picture').hide();
+			$('.desktop .sys_message').parent().addClass("col-md-12").removeClass("col-md-8");
 		}
 	});
-	$("#message").blur(function(){
+	$(".desktop .sys_message").blur(function(){
 		if(client.self.settings.hide_buttons){
-			$('#message').parent().addClass("col-md-8").removeClass("col-md-12");
-			$('#disconnect, #send_picture').show();
+			$('.desktop .sys_message').parent().addClass("col-md-8").removeClass("col-md-12");
+			$('.desktop .sys_disconnect, .sys_send_picture').show();
 		}
 	});
 
@@ -128,13 +128,14 @@ function connect(){
 	    intervalId = null;
 	}
 
-	$("#message").keypress(function(event){
+	$(".sys_message").keypress(function(event){
+		var this = $(this);
 	    clearTimeout(timeoutId);
-	    if(event.keyCode == 13 && $("#message").val() != ""){
-	    	sendMessage($('#message').val());
-			$('#message').val('');
+	    if(event.keyCode == 13 && this.val() != ""){
+	    	sendMessage(this.val());
+			this.val('');
 		}
-	    if (!intervalId) {
+	    if(!intervalId) {
 	        intervalId = setInterval(function() {
 	            ws.send(JSON.stringify({"type": "typing", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	        }, 3000);
@@ -143,7 +144,7 @@ function connect(){
 	    timeoutId = setTimeout(stopMyInterval, 500);
 	}).blur(stopMyInterval);
 
-	$("#send_picture").click(function(result){
+	$(".sys_send_picture").click(function(result){
 		bootbox.prompt("Enter picture URL...", function(result){
 			if(result){
 				("sending picture: " + result);
@@ -151,7 +152,7 @@ function connect(){
 			}
 		});
 	});
-	$("#disconnect").click(function(){
+	$(".sys_disconnect").click(function(){
 		disconnect();
 	});
 	$(document).keydown(function (e) {
@@ -180,7 +181,7 @@ function connect(){
     	ws.send(JSON.stringify({"type": "stats", "from": {"id": client.self.id, "hash": client.self.hash}}));
     }
 	function setDisabled(action){
-		$("#message, #disconnect, #send_picture").prop('disabled', action);
+		$(".sys_message, .sys_disconnect, .sys_send_picture").prop('disabled', action);
 	}
 	function replaceURLS(text) {
         var exp = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;

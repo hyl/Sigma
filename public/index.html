@@ -129,16 +129,24 @@
     </div>
     <div id="footer">
       <div class="container">
-        <div class="col-md-12">
+        <div class="col-md-12 hidden-xs hidden-sm desktop"> <!-- Hidden on mobile, shown on desktop -->
           <div class="col-md-2">
-              <button type="button" id="disconnect" class="btn btn-danger btn-block">Disconnect</button>
+              <button type="button" class="btn btn-danger btn-block sys_disconnect">Disconnect</button>
           </div>
           <div class="col-md-2">
-              <button type="button" id="send_picture" class="btn btn-primary btn-block">Send a picture</button>
+              <button type="button" class="btn btn-primary btn-block sys_send_picture">Send a picture</button>
           </div>
           <div class="col-md-8">
-              <input class="form-control" id="message" placeholder="Enter your message and hit enter..." type="text" val="test" />
+              <input class="form-control sys_message" placeholder="Enter your message and hit enter..." type="text" val="test" />
           </div>
+        </div>
+        <div class="col-md-12 hidden-lg hidden-md mobile"> <!-- Shown on mobile, hidden on desktop -->
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button class="btn btn-danger sys_disconnect" type="button">D</button>
+            </span>
+            <input type="text" class="form-control sys_message" placeholder="Enter message and hit enter...">
+          </div><!-- /input-group -->
         </div>
       </div>
     </div>

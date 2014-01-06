@@ -153,7 +153,7 @@ wsServer.on("request", function(r){
     connection.on("close", function(reasonCode, description) {
         log("info", "Client " + id + " (" + connection.remoteAddress + ") disconnected.");
         request_clients = request_clients.filter(function(currentObject) {
-            return currentObject["id"] !== id;
+            return currentObject.id !== id;
         });
         delete clients[id];
     });
