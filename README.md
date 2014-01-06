@@ -5,7 +5,7 @@ Private web chat using Node.js and WebSocket.
 
 Description
 ============
-**Sigma** is an open source web chat, running on Node.js. It features private and anonymous chat, with a waiting list for partners. It is still under development, and has not been finished. So far, I have implemented connection, chat, picture messaging, disconnect &amp; partner allocation, and typing messages [BETA].
+**Sigma** is an open source web chat, running on Node.js. It features private and anonymous chat, with a waiting list for partners. It is still under development, and has not been finished. So far, I have implemented connection, chat, picture messaging, disconnect &amp; partner allocation, typing messages and native notifications (Safari only, working on Chome).
 
 For more information please see the website at http://ovalbit.github.io/Sigma/
 
