@@ -83,6 +83,9 @@ function connect(){
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
 	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello or <a data-toggle=\"modal\" href=\"ajax/partner.html\" data-target=\"#modal\">view your partners automessage</a>.");
 	    		setDisabled(false);
+	    		if(!focused){
+	    			notify("New Partner on Σigma", "You've been connected to a new partner.");
+	    		}
 	    		break;
 	    	case "status":
 	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
@@ -93,6 +96,9 @@ function connect(){
 	    			hours = pad(time.getHours()),
 	    			minutes = pad(time.getMinutes());
 	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>System:</b> ' + data.message + '</li>');
+	    		if(!focused){
+	    			notify("Disconnected on Σigma", "You've been disconnected from your partner.");
+	    		}
 	    		setDisabled(true);
 	    		setTimeout(requestClient, 3000);
 	    		break;
