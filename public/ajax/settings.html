@@ -11,6 +11,12 @@
           Hide Disconnect and Send Picture buttons while typing a message
         </label>
       </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="native_notification">
+          Display native notification for new messages through Notification Center (OS X &amp; Safari Only)
+        </label>
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -20,16 +26,33 @@
 </div><!-- /.modal-dialog -->
 
 <script>
+  if(!window.Notification){
+    $("#native_notification").prop("disabled", true);
+  }
+
   if(client.self.settings.hide_buttons){
     $("#hide_buttons").prop("checked", true);
   }else{
     $("#hide_buttons").prop("checked", false);
+  }
+  if(client.self.settings.native_notification){
+    $("#native_notification").prop("checked", true);
+  }else{
+    $("#native_notification").prop("checked", false);
   }
   $("#save").click(function(){
     if($("#hide_buttons").prop("checked")){
       client.self.settings.hide_buttons = true;
     }else{
       client.self.settings.hide_buttons = false;
+    }
+    if($("#native_notification").prop("checked")){
+      if(Notification.permission === "default") {
+          Notification.requestPermission();
+      }
+      client.self.settings.native_notification = true;
+    }else{
+      client.self.settings.native_notification = false;
     }
     alert("Settings saved. Please note that they are still in Beta so may not work very well. Also, your settings will be lost if you reload the page.");
   });

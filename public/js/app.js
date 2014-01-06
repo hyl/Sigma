@@ -41,6 +41,7 @@ function connect(){
 	    		if(!focused){
 	    			unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
+					notify("New message on Σigma", data.message, time());
 	    		}
 	    		requestStats();
 	    		window.scrollTo(0,document.body.scrollHeight);
@@ -60,6 +61,7 @@ function connect(){
 	    		if(!focused){
 	    			unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
+					notify("New picture on Σigma", data.message, time());
 	    		}
 	    		requestStats();
 	    		window.scrollTo(0,document.body.scrollHeight);
@@ -107,13 +109,13 @@ function connect(){
 	});
 
 	/* ========== UI STUFF ========== */
-	$(".desktop .sys_message").focus(function(){
+	$(".desktop.sys_message").focus(function(){
 		if(client.self.settings.hide_buttons){
 			$('.desktop .sys_disconnect, .sys_send_picture').hide();
 			$('.desktop .sys_message').parent().addClass("col-md-12").removeClass("col-md-8");
 		}
 	});
-	$(".desktop .sys_message").blur(function(){
+	$(".desktop.sys_message").blur(function(){
 		if(client.self.settings.hide_buttons){
 			$('.desktop .sys_message').parent().addClass("col-md-8").removeClass("col-md-12");
 			$('.desktop .sys_disconnect, .sys_send_picture').show();
@@ -184,8 +186,8 @@ function connect(){
 		$(".sys_message, .sys_disconnect, .sys_send_picture").prop('disabled', action);
 	}
 	function replaceURLS(text) {
-        var exp = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        var exp2 = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
+        var links_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var images_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
         var images = text.replace(exp2, "<img src='$1' alt='$1'>");
         var links = images.replace(exp,"<a href='$1' target='_blank'>$1</a>");
         return links;
@@ -197,6 +199,38 @@ function connect(){
 		focused = true;
 		unread = 0;
 		document.title = "Σigma - Chat to random strangers";
+	};
+
+	function notify(title, body, tag) {
+	    if(!window.Notification && client.self.settings.native_notification = true;) {
+	        alert("You seem to have managed to enable native notifications however your browser is not supported. Native notifications have been disabled again.");
+	        return;
+	    }
+	    if(Notification.permission === "default") {
+	        Notification.requestPermission(function() {
+	            notify();
+	        });
+	    }
+	    else if(Notification.permission === "granted") {
+	        var n = new Notification(
+	                    title,
+	                    {
+	                      "body": body,
+	                      "tag": tag
+	                    }
+	                );
+	        n.onclick = function() {
+	            this.close();
+	        };
+	        n.onclose = function() {
+	            // Nothing, notification closed
+	        };
+	    }
+	    else if(Notification.permission === "denied") {
+	    	client.self.settings.native_notification = false;
+	        alert("You enabled native notifications but seem to have denied permission for us to send them. In order to use native notifications, please go to Safari Preferences -> Notifications and select \"Allow\" for the domain sigma.la. You will need to enable native notifications again once you've done that.");
+	        return;
+	    }
 	};
 
 	if (/*@cc_on!@*/false) {
