@@ -1,42 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Sigma : Private web chat using Node.js and WebSocket" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Sigma by OvalBit</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Sigma</title>
   </head>
-
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/OvalBit/Sigma">View on GitHub</a>
+      <header>
+        <h1>Sigma</h1>
+        <p>Private web chat using Node.js and WebSocket</p>
+      </header>
 
-          <h1 id="project_title">Sigma</h1>
-          <h2 id="project_tagline">Private web chat using Node.js and WebSocket</h2>
+      <div id="banner">
+        <span id="logo"></span>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/OvalBit/Sigma/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/OvalBit/Sigma/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+        <a href="https://github.com/OvalBit/Sigma" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/OvalBit/Sigma/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/OvalBit/Sigma/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
         <h3>
 <a name="welcome-to-sigma" class="anchor" href="#welcome-to-sigma"><span class="octicon octicon-link"></span></a>Welcome to Sigma.</h3>
 
-<p>Sigma is the easiest way to create a multi-user, one-on-one chat server using Node.js and WebSocket. Think Omegle, but less horny-teenagery and more open-sourcey. Sigma can be run with the included front end, or just a backend so that you are free to design your own UI. Sigma is super easy to install, with only one dependency:</p>
+<p>Sigma is the easiest way to create a multi-user, one-on-one chat server using Node.js and WebSocket. Think Omegle, but less horny-teenagery and more open-sourcey. Sigma can be run with the included front end, or just a backend so that you are free to design your own UI. The included UI is based on Bootstrap.</p>
 
-<pre><code>$ npm install
+<pre><code>$ npm install crypto
+$ npm install cli-color
+$ npm install express
+$ npm install websocket
 $ node server.js
 </code></pre>
 
@@ -45,7 +56,29 @@ $ node server.js
 <h3>
 <a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo</h3>
 
-<p><a href="http://ovalbit.github.io/Sigma/demo/">http://ovalbit.github.io/Sigma/demo/</a></p>
+<p><a href="http://109.74.195.222/">http://109.74.195.222/</a></p>
+
+<h3>
+<a name="security" class="anchor" href="#security"><span class="octicon octicon-link"></span></a>Security</h3>
+
+<p>When a user connects they are sent a message containing their ID, and an MD5 hash of a server-side salt, plus their ID:</p>
+
+<blockquote>
+<p>{"type": "id", "id": 1, "hash": "4b1ffd3c0c44a77c9121ffadcecedda5"}</p>
+</blockquote>
+
+<p>When they are assigned a partner, they are sent their partners ID and hash:</p>
+
+<blockquote>
+<p>{"type": "partner", "id": 2, "hash": "a3b170f94f79a0110ee96098cb0bb8dc", ...}</p>
+</blockquote>
+
+<p>Every request they make must contain their ID and hash, and if it interacts with their partner, their partners ID and hash. When requests are received the hash is regenerated and checked. If the two hashes do not match then the request is denied. This prevents a user just changing their ID and interacting with other users.</p>
+
+<h4>
+<a name="vulnerabilities" class="anchor" href="#vulnerabilities"><span class="octicon octicon-link"></span></a>Vulnerabilities</h4>
+
+<p>While the system prevents a user chatting with someone they haven't spoken to, in theory if a user was to chat with someone they could make a note of the persons ID and hash, and then set the local partner variable to that and send messages with no problem (however the partner wouldn't be able to reply).</p>
 
 <h3>
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
@@ -62,17 +95,12 @@ $ node server.js
 
 <p>Having trouble? Contact <a href="mailto:benedict@ovalbit.com">benedict@ovalbit.com</a> and I'll see what I can do.</p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Sigma maintained by <a href="https://github.com/OvalBit">OvalBit</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/OvalBit">OvalBit</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
-
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>
