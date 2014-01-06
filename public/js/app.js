@@ -129,11 +129,11 @@ function connect(){
 	}
 
 	$(".sys_message").keypress(function(event){
-		var this = $(this);
 	    clearTimeout(timeoutId);
-	    if(event.keyCode == 13 && this.val() != ""){
-	    	sendMessage(this.val());
-			this.val('');
+	    var _this = $(this);
+	    if(event.keyCode == 13 && _this.val() != ""){
+	    	sendMessage(_this.val());
+			_this.val('');
 		}
 	    if(!intervalId) {
 	        intervalId = setInterval(function() {
