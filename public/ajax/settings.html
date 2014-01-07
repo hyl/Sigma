@@ -14,7 +14,7 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" id="native_notification">
-          Display native notification for new messages through Notification Center (OS X &amp; Safari Only)
+          Display native notification for new messages through Notification Center (Beta)
         </label>
       </div>
     </div>
@@ -26,33 +26,30 @@
 </div><!-- /.modal-dialog -->
 
 <script>
-  if(!window.Notification.permission){
+  if(!window.Notification){
     $("#native_notification").prop("disabled", true);
   }
-
-  if(client.self.settings.hide_buttons){
+  if(window.localStorage.getItem("hide_buttons")){
     $("#hide_buttons").prop("checked", true);
   }else{
     $("#hide_buttons").prop("checked", false);
   }
-  if(client.self.settings.native_notification){
+  if(window.localStorage.getItem("native_notification")){
     $("#native_notification").prop("checked", true);
   }else{
     $("#native_notification").prop("checked", false);
   }
   $("#save").click(function(){
     if($("#hide_buttons").prop("checked")){
-      client.self.settings.hide_buttons = true;
+      window.localStorage.setItem("hide_buttons", true);
     }else{
-      client.self.settings.hide_buttons = false;
+      window.localStorage.setItem("hide_buttons", false);
     }
     if($("#native_notification").prop("checked")){
-      if(Notification.permission === "default") {
-          Notification.requestPermission();
-      }
-      client.self.settings.native_notification = true;
+      notify("Test Notification", "You have successfully enabled notifications", "http://cdn1.iconfinder.com/data/icons/windows-8-metro-style/26/checked_checkbox.png");
+      window.localStorage.setItem("native_notification", true);
     }else{
-      client.self.settings.native_notification = false;
+      window.localStorage.setItem("native_notification", false);
     }
     alert("Settings saved. Please note that they are still in Beta so may not work very well. Also, your settings will be lost if you reload the page.");
   });

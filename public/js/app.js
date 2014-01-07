@@ -13,13 +13,13 @@ function connect(){
 	/* ========== WEBSOCKET STUFF ========== */
 	switch (ws.readyState) {
 	  case WebSocket.CONNECTING:
-	    $("#status").html("<strong>Connecting to the chat server...</strong>");
-	    setDisabled(true);
-	    break;
+		$("#status").html("<strong>Connecting to the chat server...</strong>");
+		setDisabled(true);
+		break;
 	  case WebSocket.CLOSED:
-	    $("#status").html("<strong>Disconnected from chat server...</strong>");
-	    setDisabled(true);
-	    break;
+		$("#status").html("<strong>Disconnected from chat server...</strong>");
+		setDisabled(true);
+		break;
 	}
 	ws.addEventListener("message", function(e) {
 		(e);
@@ -27,90 +27,90 @@ function connect(){
 		switch(data.type){
 			case "message":
 				var time = new Date(),
-	    			hours = pad(time.getHours()),
-	    			minutes = pad(time.getMinutes());
-	    		var from;
-	    		if(data.from.id == client.self.id){
-	    			from = "You";
-	    		}else if(data.from.id == client.partner.id){
-	    			from = "Partner";
-	    		}else{
-	    			from = "System";
-	    		}
-	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> ' + replaceURLS(data.message) + '</li>');
-	    		if(!focused){
-	    			unread++;
+					hours = pad(time.getHours()),
+					minutes = pad(time.getMinutes());
+				var from;
+				if(data.from.id == client.self.id){
+					from = "You";
+				}else if(data.from.id == client.partner.id){
+					from = "Partner";
+				}else{
+					from = "System";
+				}
+				$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> ' + replaceURLS(data.message) + '</li>');
+				if(!focused){
+					unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
-					notify("New message on Σigma", data.message);
-	    		}
-	    		requestStats();
-	    		window.scrollTo(0,document.body.scrollHeight);
-	    		break;
-	    	case "picture":
-	    		var time = new Date(),
-	    			hours = pad(time.getHours()),
-	    			minutes = pad(time.getMinutes());
-	    		if(data.from.id == client.self.id){
-	    			from = "You";
-	    		}else if(data.from.id == client.partner.id){
-	    			from = "Partner";
-	    		}else{
-	    			from = "System";
-	    		}
-	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> <img src="' + data.url + '" alt="What is the meaning of life?" width="100px" height="auto"></li>');
-	    		if(!focused){
-	    			unread++;
+					notify("New Message", data.message, "http://cdn1.iconfinder.com/data/icons/windows-8-metro-style/26/message.png");
+				}
+				requestStats();
+				window.scrollTo(0,document.body.scrollHeight);
+				break;
+			case "picture":
+				var time = new Date(),
+					hours = pad(time.getHours()),
+					minutes = pad(time.getMinutes());
+				if(data.from.id == client.self.id){
+					from = "You";
+				}else if(data.from.id == client.partner.id){
+					from = "Partner";
+				}else{
+					from = "System";
+				}
+				$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>' + from + ':</b> <img src="' + data.url + '" alt="What is the meaning of life?" width="100px" height="auto"></li>');
+				if(!focused){
+					unread++;
 					document.title = "(" + unread + ") Σigma - Chat to random strangers";
-					notify("New picture on Σigma", data.message, time());
-	    		}
-	    		requestStats();
-	    		window.scrollTo(0,document.body.scrollHeight);
-	    		break;
-	    	case "id":
-	    		client.self.id = data.id;
-	    		client.self.hash = data.hash;
-	    		("Assigned ID of " + client.self.id + " with hash of " + data.hash);
-	    		$("#status").html("<strong>Connected to the chat server, just waiting for a partner. Hold tight!</strong>");
-	    		requestClient();
-	    		requestStats();
-	    		break;
-	    	case "partner":
-	    		client.partner.id = data.id;
-	    		client.partner.hash = data.hash;
-	    		client.partner.automessage = data.automessage;
-	    		console.log(data);
-	    		("Assigned partner with an ID of " + client.partner + " with hash of " + data.hash);
-	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
-	    		$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello or <a data-toggle=\"modal\" href=\"ajax/partner.html\" data-target=\"#modal\">view your partners automessage</a>.");
-	    		setDisabled(false);
-	    		if(!focused){
-	    			notify("New Partner on Σigma", "You've been connected to a new partner.");
-	    		}
-	    		break;
-	    	case "status":
-	    		$("#chat").html('<li class="list-group-item" id="status"></li>');
-	    		$("#status").html("<strong>" + data.message + "</strong>");
-	    		break;
-	    	case "disconnected":
-	    		var time = new Date(),
-	    			hours = pad(time.getHours()),
-	    			minutes = pad(time.getMinutes());
-	    		$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>System:</b> ' + data.message + '</li>');
-	    		if(!focused){
-	    			notify("Disconnected on Σigma", "You've been disconnected from your partner.");
-	    		}
-	    		setDisabled(true);
-	    		setTimeout(requestClient, 3000);
-	    		break;
-	    	case "stats":
-	    		$("#stats").text(data.user_count + " users, " + data.message_count + " messages");
-	    		break;
-	    	case "typing":
-	    		$('#typing').fadeIn('fast');
-	    		setTimeout(function(){
-	    			$('#typing').fadeOut('fast');
-	    		}, 3000);
-	    		break;
+					notify("New Picture", data.message, "http://cdn1.iconfinder.com/data/icons/windows-8-metro-style/26/picture.png");
+				}
+				requestStats();
+				window.scrollTo(0,document.body.scrollHeight);
+				break;
+			case "id":
+				client.self.id = data.id;
+				client.self.hash = data.hash;
+				("Assigned ID of " + client.self.id + " with hash of " + data.hash);
+				$("#status").html("<strong>Connected to the chat server, just waiting for a partner. Hold tight!</strong>");
+				requestClient();
+				requestStats();
+				break;
+			case "partner":
+				client.partner.id = data.id;
+				client.partner.hash = data.hash;
+				client.partner.automessage = data.automessage;
+				console.log(data);
+				("Assigned partner with an ID of " + client.partner + " with hash of " + data.hash);
+				$("#chat").html('<li class="list-group-item" id="status"></li>');
+				$("#status").html("<strong>Awesome! You're connected with a random stranger, say hello or <a data-toggle=\"modal\" href=\"ajax/partner.html\" data-target=\"#modal\">view your partners automessage</a>.");
+				setDisabled(false);
+				if(!focused){
+					notify("New Partner", "You've been connected to a new partner.", "http://cdn1.iconfinder.com/data/icons/windows-8-metro-style/26/checked_user.png");
+				}
+				break;
+			case "status":
+				$("#chat").html('<li class="list-group-item" id="status"></li>');
+				$("#status").html("<strong>" + data.message + "</strong>");
+				break;
+			case "disconnected":
+				var time = new Date(),
+					hours = pad(time.getHours()),
+					minutes = pad(time.getMinutes());
+				$('#chat').append('<li class="list-group-item"><span class="label label-primary pull-right">' + hours + ':' + minutes + '</span><b>System:</b> ' + data.message + '</li>');
+				if(!focused){
+					notify("Disconnected", "You've been disconnected from your partner.", "http://cdn1.iconfinder.com/data/icons/windows-8-metro-style/26/remove_user.png");
+				}
+				setDisabled(true);
+				setTimeout(requestClient, 3000);
+				break;
+			case "stats":
+				$("#stats").text(data.user_count + " users, " + data.message_count + " messages");
+				break;
+			case "typing":
+				$('#typing').fadeIn('fast');
+				setTimeout(function(){
+					$('#typing').fadeOut('fast');
+				}, 3000);
+				break;
 		}
 	});
 
@@ -132,24 +132,24 @@ function connect(){
 		intervalId;
 
 	function stopMyInterval() {
-	    clearInterval(intervalId);
-	    intervalId = null;
+		clearInterval(intervalId);
+		intervalId = null;
 	}
 
 	$(".sys_message").keypress(function(event){
-	    clearTimeout(timeoutId);
-	    var _this = $(this);
-	    if(event.keyCode == 13 && _this.val() != ""){
-	    	sendMessage(_this.val());
+		clearTimeout(timeoutId);
+		var _this = $(this);
+		if(event.keyCode == 13 && _this.val() != ""){
+			sendMessage(_this.val());
 			_this.val('');
 		}
-	    if(!intervalId) {
-	        intervalId = setInterval(function() {
-	            ws.send(JSON.stringify({"type": "typing", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
-	        }, 3000);
-	    }
+		if(!intervalId) {
+			intervalId = setInterval(function() {
+				ws.send(JSON.stringify({"type": "typing", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
+			}, 3000);
+		}
 
-	    timeoutId = setTimeout(stopMyInterval, 500);
+		timeoutId = setTimeout(stopMyInterval, 500);
 	}).blur(stopMyInterval);
 
 	$(".sys_send_picture").click(function(result){
@@ -164,9 +164,9 @@ function connect(){
 		disconnect();
 	});
 	$(document).keydown(function (e) {
-	    if(e.which === 27 && (e.ctrlKey || e.metaKey)){ // Ctrl + ESC
-	        disconnect();
-	    }
+		if(e.which === 27 && (e.ctrlKey || e.metaKey)){ // Ctrl + ESC
+			disconnect();
+		}
 	});
 
 	/* ========== FUNCTIONS ========== */
@@ -174,7 +174,7 @@ function connect(){
 		return $("<div/>").text(message).html();
 	}
 	function pad(n) {
-	    return (n < 10) ? ("0" + n) : n;
+		return (n < 10) ? ("0" + n) : n;
 	}
 	function sendMessage(message) {
 		ws.send(JSON.stringify({"type": "message", "message": escape(message), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
@@ -186,20 +186,20 @@ function connect(){
 		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	}
 	function requestStats(){
-    	ws.send(JSON.stringify({"type": "stats", "from": {"id": client.self.id, "hash": client.self.hash}}));
-    }
+		ws.send(JSON.stringify({"type": "stats", "from": {"id": client.self.id, "hash": client.self.hash}}));
+	}
 	function setDisabled(action){
 		$(".sys_message, .sys_disconnect, .sys_send_picture").prop('disabled', action);
 	}
 	function replaceURLS(text) {
-        /*
-        var links_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        var images_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
-        var images = text.replace(exp2, "<img src='$1' alt='$1'>");
-        var links = images.replace(exp,"<a href='$1' target='_blank'>$1</a>");
-        */
-        return text;
-    }
+		/*
+		var links_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+		var images_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
+		var images = text.replace(exp2, "<img src='$1' alt='$1'>");
+		var links = images.replace(exp,"<a href='$1' target='_blank'>$1</a>");
+		*/
+		return text;
+	}
 	function onBlur() {
 		focused = false;
 	};
@@ -209,37 +209,55 @@ function connect(){
 		document.title = "Σigma - Chat to random strangers";
 	};
 
-	function notify(title, body) {
-	    if((!window.Notification) && (client.self.settings.native_notification)) {
-	        alert("You seem to have managed to enable native notifications however your browser is not supported. Native notifications have been disabled again.");
-	        return;
-	    }
-	    if(Notification.permission === "default") {
-	        Notification.requestPermission(function() {
-	            notify();
-	        });
-	    }
-	    else if(Notification.permission === "granted") {
-	        var n = new Notification(
-	                    title,
-	                    {
-	                      "body": body,
-	                      "tag": new Date().getTime()
-	                    }
-	                );
-	        n.onclick = function() {
-	            this.close();
-	        };
-	        n.onclose = function() {
-	            // Nothing, notification closed
-	        };
-	    }
-	    else if(Notification.permission === "denied") {
-	    	client.self.settings.native_notification = false;
-	        alert("You enabled native notifications but seem to have denied permission for us to send them. In order to use native notifications, please go to Safari Preferences -> Notifications and select \"Allow\" for the domain sigma.la. You will need to enable native notifications again once you've done that.");
-	        return;
-	    }
-	};
+
+	function notify(title, body, icon) {
+		if(window.localStorage.getItem("native_notification") == false){
+			return;
+		}
+		// Let's check if the browser supports notifications
+		if (!("Notification" in window)) {
+			window.localStorage.setItem("native_notification", false);
+			alert("This browser does not support desktop notification, so they have been disabled.");
+		}
+
+		// Let's check if the user is okay to get some notification
+		else if (Notification.permission === "granted") {
+		// If it's okay let's create a notification
+		var notification = new Notification(
+			title,
+			{
+				body: body,
+				icon: icon,
+				tag: new Date().getTime()
+			}
+		);
+		}
+
+		// Otherwise, we need to ask the user for permission
+		// Note, Chrome does not implement the permission static property
+		// So we have to check for NOT 'denied' instead of 'default'
+		else if (Notification.permission !== 'denied') {
+		Notification.requestPermission(function (permission) {
+
+		  // Whatever the user answers, we make sure Chrome stores the information
+		  if(!('permission' in Notification)) {
+			Notification.permission = permission;
+		  }
+
+		  // If the user is okay, let's create a notification
+		  if (permission === "granted") {
+			var notification = new Notification(
+				title,
+				{
+					body: body,
+					icon: icon,
+					tag: new Date().getTime()
+				}
+			);
+		  }
+		});
+		}
+	}
 
 	if (/*@cc_on!@*/false) {
 		document.onfocusin = onFocus;
@@ -250,6 +268,6 @@ function connect(){
 	}
 
 	setInterval(function() {
-	    requestStats();
+		requestStats();
 	}, 3000);
 }
