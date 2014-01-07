@@ -192,12 +192,7 @@ function connect(){
 		$(".sys_message, .sys_disconnect, .sys_send_picture").prop('disabled', action);
 	}
 	function replaceURLS(text) {
-		/*
-		var links_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-		var images_regex = /[^"'](\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])+\.(?:jpe?g|gif|png)/ig;
-		var images = text.replace(exp2, "<img src='$1' alt='$1'>");
-		var links = images.replace(exp,"<a href='$1' target='_blank'>$1</a>");
-		*/
+		// Parse links, images and youtube here (Depending on settings)
 		return text;
 	}
 	function onBlur() {

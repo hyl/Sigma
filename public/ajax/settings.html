@@ -17,6 +17,24 @@
           Display native notification for new messages through Notification Center (Beta)
         </label>
       </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="parse_links">
+          Automatically turn URLs into clickable links
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="parse_images">
+          Embed links to images in the chat
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="parse_youtube">
+          Embed YouTube video links
+        </label>
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -39,6 +57,21 @@
   }else{
     $("#native_notification").prop("checked", false);
   }
+  if(window.localStorage.getItem("parse_links") == "true"){
+    $("#parse_links").prop("checked", true);
+  }else{
+    $("#parse_links").prop("checked", false);
+  }
+  if(window.localStorage.getItem("parse_images") == "true"){
+    $("#parse_images").prop("checked", true);
+  }else{
+    $("#parse_images").prop("checked", false);
+  }
+  if(window.localStorage.getItem("parse_youtube") == "true"){
+    $("#parse_youtube").prop("checked", true);
+  }else{
+    $("#parse_youtube").prop("checked", false);
+  }
   $("#save").click(function(){
     if($("#hide_buttons").prop("checked")){
       window.localStorage.setItem("hide_buttons", true);
@@ -51,6 +84,21 @@
     }else{
       window.localStorage.setItem("native_notification", false);
     }
-    alert("Settings saved. Please note that they are still in Beta so may not work very well. Your settings are stored in localStorage so shouldn't be lost if you change page.");
+    if($("#parse_links").prop("checked")){
+      window.localStorage.setItem("parse_links", true);
+    }else{
+      window.localStorage.setItem("parse_links", false);
+    }
+    if($("#parse_images").prop("checked")){
+      window.localStorage.setItem("parse_images", true);
+    }else{
+      window.localStorage.setItem("parse_images", false);
+    }
+    if($("#parse_youtube").prop("checked")){
+      window.localStorage.setItem("parse_youtube", true);
+    }else{
+      window.localStorage.setItem("parse_youtube", false);
+    }
+    alert("Settings saved. Please note that they are still in Beta so may not work very well. Your settings are stored in localStorage so shouldn't be lost if you change page.x");
   });
 </script>
