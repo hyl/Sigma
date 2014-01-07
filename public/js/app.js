@@ -5,7 +5,7 @@ $("#startchat").click(function(){
 			connect();
 	});
 });
-var client = {"self": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}, "settings": {"hide_buttons": true, "native_notification": false}}, "partner": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}};
+var client = {"self": {"id": null, "hash": null}, "partner": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}};
 function connect(){
 	var ws = new WebSocket('ws://109.74.195.222:8888', 'echo-protocol');
 	var focused;
@@ -180,7 +180,7 @@ function connect(){
 		ws.send(JSON.stringify({"type": "message", "message": escape(message), "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));
 	}
 	function requestClient(){
-		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash, "automessage": client.self.automessage}}));
+		ws.send(JSON.stringify({"type": "requestpartner", "from": {"id": client.self.id, "hash": client.self.hash, "automessage": {"asl": window.localStorage.getItem("asl"), "name": window.localStorage.getItem("name"), "email": window.localStorage.getItem("email"), "kik": window.localStorage.getItem("kik"), "skype": window.localStorage.getItem("skype")}}}));
 	}
 	function disconnect(){
 		ws.send(JSON.stringify({"type": "disconnect", "from": {"id": client.self.id, "hash": client.self.hash}, "to": {"id": client.partner.id, "hash": client.partner.hash}}));

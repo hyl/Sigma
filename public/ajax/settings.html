@@ -29,12 +29,12 @@
   if(!window.Notification){
     $("#native_notification").prop("disabled", true);
   }
-  if(window.localStorage.getItem("hide_buttons")){
+  if(window.localStorage.getItem("hide_buttons") == "true"){
     $("#hide_buttons").prop("checked", true);
   }else{
     $("#hide_buttons").prop("checked", false);
   }
-  if(window.localStorage.getItem("native_notification")){
+  if(window.localStorage.getItem("native_notification") == "true"){
     $("#native_notification").prop("checked", true);
   }else{
     $("#native_notification").prop("checked", false);

@@ -154,9 +154,6 @@
       </div>
     </div>
 
-    <!-- Modal for AJAX Content, loaded with data-api -->
-    <div class="modal fade" id="modal"></div>
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -169,5 +166,8 @@
       $(this).removeData("bs.modal");
     });
     </script>
+
+    <!-- Modal for AJAX Content, loaded with data-api (after JS so can access app.js) -->
+    <div class="modal fade" id="modal"></div>
   </body>
 </html>
