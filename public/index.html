@@ -16,6 +16,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/custom.css" rel="stylesheet">
+    <link href="css/bootstrap-tagsinput.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don"t actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -70,8 +71,8 @@
               2) <em>a free anonymous online chat platform*.</em>
             </p>
             <div class="btn-group">
-              <button type="button" class="btn btn-primary" id="startchat">Stat chatting now &raquo;</button>
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              <button type="button" class="btn btn-primary btn-lg" id="startchat">Stat chatting now &raquo;</button>
+              <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown">
                 <span class="glyphicon glyphicon-cog"></span>
                 <span class="sr-only">Toggle Dropdown</span>
               </button>
@@ -79,9 +80,13 @@
                 <li><a data-toggle="modal" href="ajax/automessage.html" data-target="#modal">Edit Automessage</a></li>
                 <li><a data-toggle="modal" href="ajax/settings.html" data-target="#modal">Settings</a></li>
                 <li class="divider"></li>
-                <li><a href="#">Set Interests <span class="label label-primary">Coming Soon</span></a></li>
+                <!--<li><a href="#">Set Interests <span class="label label-primary">Coming Soon</span></a></li>-->
                 <li><a href="#">Set Age <span class="label label-primary">Coming Soon</span></a></li>
               </ul>
+            </div>
+            <div class="no-jumbo">
+              <input type="text" placeholder="Enter your interests (hit enter after each one)" data-role="tagsinput" />
+              <p class="help-block">We will try to match you with users that have all, or some of your interests.</p>
             </div>
           </div>
         </div>
@@ -161,6 +166,7 @@
     <script src="js/notify.js"></script>
     <script src="js/bootbox.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-tagsinput.min.js"></script>
     <script>
     $("body").on("hidden.bs.modal", ".modal", function () {
       $(this).removeData("bs.modal");
