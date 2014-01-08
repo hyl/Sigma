@@ -96,6 +96,13 @@ function send(from, to, message){
     }
 }
 
+function findPartners(interests){
+    // Find partners
+    var id = null;
+
+    return id;
+}
+
 log("info", "Salt for this session is " + salt);
 
 wsServer.on("request", function(r){
@@ -116,8 +123,9 @@ wsServer.on("request", function(r){
             case "requestpartner":
                 log("info", "Client " + data.from.id + " requesting new partner.");
                 if(checkHash(data.from.id, data.from.hash)){
+                    console.log("info", "Client " + data.from.id + " requesting partner with following interests: " + JSON.stringify(data.interests));
                     if(request_clients.length === 0) {
-                        var prep = {"id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage};
+                        var prep = {"id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage, "interests": data.interests};
                         request_clients.push(prep);
                         clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available."}));
                     } else{
