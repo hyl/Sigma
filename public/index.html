@@ -44,7 +44,7 @@
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
               <p class="navbar-text" id="typing">Your partner is typing...</p>
-              <p class="navbar-text" id="stats">0 users, 0 messages</p>
+              <p class="navbar-text" id="stats"></p>
               <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="glyphicon glyphicon-cog"></b></a>
                 <ul class="dropdown-menu">
@@ -52,8 +52,6 @@
                   <li><a href="mailto:benedict@ovalbit.com">Contact</a></li>
                   <li><a data-toggle="modal" href="ajax/automessage.html" data-target="#modal">Edit Automessage</a></li>
                   <li><a data-toggle="modal" href="ajax/settings.html" data-target="#modal">Settings</a></li>
-                  <li class="divider"></li>
-                  <li><a data-toggle="modal" href="ajax/admin.html" data-target="#modal">Admin Zone</a></li>
                 </ul>
               </li>
             </ul>
@@ -85,8 +83,11 @@
               </ul>
             </div>
             <div class="no-jumbo">
-              <input type="text" id="interests" placeholder="Enter your interests (hit enter after each one)" data-role="tagsinput" />
+              <input type="text" id="interests" placeholder="Enter your interests (hit enter after each one)" data-role="tagsinput" disabled="true"/>
               <p class="help-block">We will try to match you with users that have all, or some of your interests.</p>
+              <div class="alert alert-warning">
+                <strong>Warning:</strong> This feature is still under development. Please don't add anything here yet.
+              </div>
             </div>
           </div>
         </div>
@@ -144,7 +145,7 @@
               <button type="button" class="btn btn-primary btn-sm btn-block sys_send_picture">Send a picture</button>
           </div>
           <div class="col-md-8">
-              <input class="form-control sys_message" placeholder="Enter your message and hit enter..." type="text" val="test" />
+              <input class="form-control sys_message hide-on-type" placeholder="Enter your message and hit enter..." type="text" val="test" />
           </div>
         </div>
         <div class="col-md-12 hidden-lg hidden-md mobile"> <!-- Shown on mobile, hidden on desktop -->

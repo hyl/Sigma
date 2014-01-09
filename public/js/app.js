@@ -11,7 +11,8 @@ function connect(){
 		focused,
 		unread = 0;
 
-	client.self.interests = $("#interests").val(); // Will return "foo", "bar". Need to get custom function to return array
+	client.self.interests = $("#interests").tagsinput("items");
+	console.log(client.self.interests);
 
 	/* ========== WEBSOCKET STUFF ========== */
 	switch (ws.readyState) {
@@ -119,15 +120,15 @@ function connect(){
 
 	/* ========== UI STUFF ========== */
 	$(".desktop.sys_message").focus(function(){
-		if(client.self.settings.hide_buttons){
-			$('.desktop .sys_disconnect, .sys_send_picture').hide();
-			$('.desktop .sys_message').parent().addClass("col-md-12").removeClass("col-md-8");
+		if(client.self.settings.hide_buttons == "true"){
+			$('.desktop.sys_disconnect, .sys_send_picture').hide();
+			$('.desktop.sys_message').parent().addClass("col-md-12").removeClass("col-md-8");
 		}
 	});
 	$(".desktop.sys_message").blur(function(){
-		if(client.self.settings.hide_buttons){
-			$('.desktop .sys_message').parent().addClass("col-md-8").removeClass("col-md-12");
-			$('.desktop .sys_disconnect, .sys_send_picture').show();
+		if(client.self.settings.hide_buttons  == "true"){
+			$('.desktop.sys_message').parent().addClass("col-md-8").removeClass("col-md-12");
+			$('.desktop.sys_disconnect, .sys_send_picture').show();
 		}
 	});
 
