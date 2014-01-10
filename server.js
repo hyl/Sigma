@@ -116,10 +116,10 @@ function findPartners(incoming){
     }
 
     if(index) {
-        log("success", "Found match for client " + request_clients[index].id);
+        log("success", "Found match for client " + incoming.from.id + "->" + request_clients[index].id);
         return request_clients[index]; // print the match
     } else {
-        log("info", "Unable to find a match for client " + request_clients[index].id + " so adding to waiting list");
+        log("info", "Unable to find a match for client " + incoming.from.id + " so adding to waiting list");
         // add to waiting list
         request_clients.push(incoming);
         return false;
