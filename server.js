@@ -10,6 +10,7 @@ var http = require("http"),
     error = clc.bgRed,
     stats = clc.bgYellow,
     raw = clc.bgWhite.black,
+    debug = clc.bgMagentaBright.bgCyan,
     salt = crypto.randomBytes(16).toString("base64"),
     count = 0,
     messages = 0,
@@ -61,6 +62,9 @@ function log(type, message){
         case "raw":
             console.log(new Date() + " " + raw("[RAW]") + " " + message);
             break;
+        case "debug":
+            console.log(new Date() + " " + debug("[DEBUG]") + " " + message);
+            break;
     }
     
 }
@@ -101,18 +105,24 @@ function findPartners(incoming){
         index; // will contain the count & index of largest match
     for (var i = 0; i < request_clients.length; i++) { // iterate over the waiting list
         var current = request_clients[i];
+        log("debug", "Current object is \"" + JSON.stringify(current) + "\"");
         var currentCount = 0; // get the current match count
+        log("debug", "Current count is \"" + currentCount + "\"");
         var incoming_array = incoming.from.interests; // get the incoming interest
+        log("debug", "Incoming array is \"" + JSON.stringify(incoming_array) + "\"");
         for (var j = 0; j < incoming_array.length; j++) {
-            if(current.from.interests.indexOf(incoming_array[j]) > -1) { 
-               currentCount++; // add to count if match is found
+            if(current.from.interests.indexOf(incoming_array[j]) > -1) {
+                currentCount++; // add to count if match is found
+                log("debug", "Match found, current count is now \"" + currentCount + "\"");
             }
             if(currentCount > largerCount) { // if current count is bigger then assign it to largerCounr
                 largerCount = currentCount;
                 index = i; // assign the index of match
+                log("debug", "currentCount larger than largerCount, index is \"" + index + "\"");
             }
         }
         currentCount = 0;
+        log("debug", "currentCount set to zero");
     }
 
     if(index) {
