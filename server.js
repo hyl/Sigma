@@ -96,11 +96,34 @@ function send(from, to, message){
     }
 }
 
-function findPartners(interests){
-    // Find partners
-    var id = null;
+function findPartners(incoming){
+    var largerCount = 0,
+        index; // will contain the count & index of largest match
+    for (var i = 0; i < request_clients.length; i++) { // iterate over the waiting list
+        var current = request_clients[i];
+        var currentCount = 0; // get the current match count
+        var incoming_array = incoming.from.interests; // get the incoming interest
+        for (var j = 0; j < incoming_array.length; j++) {
+            if(current.interests.indexOf(incoming_array[j]) > -1) { 
+               currentCount++; // add to count if match is found
+            }
+            if(currentCount > largerCount) { // if current count is bigger then assign it to largerCounr
+                largerCount = currentCount;
+                index = i; // assign the index of match
+            }
+        }
+        currentCount = 0;
+    }
 
-    return id;
+    if(index) {
+        log("success", "Found match for client " + request_clients[index].id);
+        return request_clients[index]; // print the match
+    } else {
+        log("info", "Unable to find a match for client " + request_clients[index].id + " so adding to waiting list");
+        // add to waiting list
+        request_clients.push(incoming);
+        return false;
+    }
 }
 
 log("info", "Salt for this session is " + salt);
@@ -124,19 +147,17 @@ wsServer.on("request", function(r){
                 log("info", "Client " + data.from.id + " requesting new partner.");
                 if(checkHash(data.from.id, data.from.hash)){
                     console.log("info", "Client " + data.from.id + " requesting partner with following interests: " + JSON.stringify(data.interests));
-                    if(request_clients.length === 0) {
-                        var prep = {"id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage, "interests": data.interests};
-                        request_clients.push(prep);
-                        clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available."}));
-                    } else{
-                        var partner = request_clients[Math.floor(Math.random() * request_clients.length)];
+                    if(findPartners(data)){
+                        var partner = findPartners(data);
                         var i = request_clients.indexOf(partner);
                         if(i != -1) {
                             request_clients.splice(i, 1);
                         }
                         log("success", "Partnered " + partner.id + " with " + data.from.id + " and removed " + partner.id + " from request list");
-                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner.id, "hash": partner.hash, "automessage": partner.automessage}));
-                        send({"id": "server", "hash": salt}, {"id": partner.id}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage}));
+                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner.id, "hash": partner.hash, "automessage": partner.automessage, "interests": partner.interests}));
+                        send({"id": "server", "hash": salt}, {"id": partner.id}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage, "interests": data.from.interests}));
+                    }else{
+                        clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available."}));
                     }
                 }else{
                     log("error", "Partner request denied as client hashes are invalid, client notified");

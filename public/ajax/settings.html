@@ -61,21 +61,6 @@
   }else{
     $("#native_notification").prop("checked", false);
   }
-  if(window.localStorage.getItem("parse_links") == "true"){
-    $("#parse_links").prop("checked", true);
-  }else{
-    $("#parse_links").prop("checked", false);
-  }
-  if(window.localStorage.getItem("parse_images") == "true"){
-    $("#parse_images").prop("checked", true);
-  }else{
-    $("#parse_images").prop("checked", false);
-  }
-  if(window.localStorage.getItem("parse_youtube") == "true"){
-    $("#parse_youtube").prop("checked", true);
-  }else{
-    $("#parse_youtube").prop("checked", false);
-  }
   $("#save").click(function(){
     if($("#hide_buttons").prop("checked")){
       window.localStorage.setItem("hide_buttons", true);
@@ -87,21 +72,6 @@
       window.localStorage.setItem("native_notification", true);
     }else{
       window.localStorage.setItem("native_notification", false);
-    }
-    if($("#parse_links").prop("checked")){
-      window.localStorage.setItem("parse_links", true);
-    }else{
-      window.localStorage.setItem("parse_links", false);
-    }
-    if($("#parse_images").prop("checked")){
-      window.localStorage.setItem("parse_images", true);
-    }else{
-      window.localStorage.setItem("parse_images", false);
-    }
-    if($("#parse_youtube").prop("checked")){
-      window.localStorage.setItem("parse_youtube", true);
-    }else{
-      window.localStorage.setItem("parse_youtube", false);
     }
     alert("Settings saved. Please note that they are still in Beta so may not work very well. Your settings are stored in localStorage so shouldn't be lost if you change page.x");
   });
