@@ -125,7 +125,7 @@ function findPartners(incoming){
     }
     log("debug", "Index is \"" + index + "\" [LINE 127]");
     if(index != null) {
-        log("success", "Found match for client " + incoming.from.id + "->" + request_clients[index].id + " [LINE 129]");
+        log("success", "Found match for client " + incoming.from.id + "->" + request_clients[index].from.id + " [LINE 129]");
         return request_clients[index]; // print the match
     } else {
         log("info", "Unable to find a match for client " + incoming.from.id + " so adding to waiting list [LINE 132]");
@@ -162,9 +162,9 @@ wsServer.on("request", function(r){
                         if(i != -1) {
                             request_clients.splice(i, 1);
                         }
-                        log("success", "Partnered " + partner.id + " with " + data.from.id + " and removed " + partner.id + " from request list");
-                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner.id, "hash": partner.hash, "automessage": partner.automessage, "interests": partner.interests}));
-                        send({"id": "server", "hash": salt}, {"id": partner.id}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage, "interests": data.from.interests}));
+                        log("success", "Partnered " + partner.from.id + " with " + data.from.id + " and removed " + partner.from.id + " from request list");
+                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner.from.id, "hash": partner.hash, "automessage": partner.automessage, "interests": partner.interests}));
+                        send({"id": "server", "hash": salt}, {"id": partner.from.id}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage, "interests": data.from.interests}));
                     }else{
                         clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available."}));
                     }
