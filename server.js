@@ -163,7 +163,7 @@ wsServer.on("request", function(r){
                             request_clients.splice(i, 1);
                         }
                         log("success", "Partnered " + partner.from.id + " with " + data.from.id + " and removed " + partner.from.id + " from request list");
-                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner.from.id, "hash": partner.hash, "automessage": partner.automessage, "interests": partner.interests}));
+                        send({"id": "server", "hash": salt}, {"id": data.from.id}, JSON.stringify({"type": "partner", "id": partner.from.id, "hash": partner.from.hash, "automessage": partner.from.automessage, "interests": partner.from.interests}));
                         send({"id": "server", "hash": salt}, {"id": partner.from.id}, JSON.stringify({"type": "partner", "id": data.from.id, "hash": data.from.hash, "automessage": data.from.automessage, "interests": data.from.interests}));
                     }else{
                         clients[data.from.id].sendUTF(JSON.stringify({"type": "status", "message": "Sorry, it looks like everyone else is already chatting with someone. We've added you to the waiting list so you will be connected as soon as someone becomes available."}));
