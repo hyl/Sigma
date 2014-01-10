@@ -146,7 +146,7 @@ wsServer.on("request", function(r){
             case "requestpartner":
                 log("info", "Client " + data.from.id + " requesting new partner.");
                 if(checkHash(data.from.id, data.from.hash)){
-                    console.log("info", "Client " + data.from.id + " requesting partner with following interests: " + JSON.stringify(data.interests));
+                    log("info", "Client " + data.from.id + " requesting partner with following interests: " + JSON.stringify(data.from.interests));
                     if(findPartners(data)){
                         var partner = findPartners(data);
                         var i = request_clients.indexOf(partner);
