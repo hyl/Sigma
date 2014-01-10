@@ -104,7 +104,7 @@ function findPartners(incoming){
         var currentCount = 0; // get the current match count
         var incoming_array = incoming.from.interests; // get the incoming interest
         for (var j = 0; j < incoming_array.length; j++) {
-            if(current.interests.indexOf(incoming_array[j]) > -1) { 
+            if(current.from.interests.indexOf(incoming_array[j]) > -1) { 
                currentCount++; // add to count if match is found
             }
             if(currentCount > largerCount) { // if current count is bigger then assign it to largerCounr
