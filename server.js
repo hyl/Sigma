@@ -104,31 +104,22 @@ function findPartners(incoming){
     var largerCount = 0, index; // will contain the count & index of largest match
     for (var i = 0; i < request_clients.length; i++) { // iterate over the waiting list
         var current = request_clients[i];
-        log("debug", "Current object is \"" + JSON.stringify(current) + "\" [LINE 108]");
         var currentCount = 0; // get the current match count
-        log("debug", "Current count is \"" + currentCount + "\" [LINE 110]");
         var incoming_array = incoming.from.interests; // get the incoming interest
-        log("debug", "Incoming array is \"" + JSON.stringify(incoming_array) + "\" [LINE 112]");
         for (var j = 0; j < incoming_array.length; j++) {
             if(current.from.interests.indexOf(incoming_array[j]) > -1) {
                 currentCount++; // add to count if match is found
-                log("debug", "Match found, current count is now \"" + currentCount + "\" [LINE 116]");
             }
             if(currentCount > largerCount) { // if current count is bigger then assign it to largerCounr
                 largerCount = currentCount;
                 index = i; // assign the index of match
-                log("debug", "currentCount larger than largerCount, index is \"" + index + "\" [LINE 121]");
             }
         }
         currentCount = 0;
-        log("debug", "currentCount set to zero" + " [LINE 125]");
     }
-    log("debug", "Index is \"" + index + "\" [LINE 127]");
     if(index != null) {
-        log("success", "Found match for client " + incoming.from.id + "->" + request_clients[index].from.id + " [LINE 129]");
         return request_clients[index]; // print the match
     } else {
-        log("info", "Unable to find a match for client " + incoming.from.id + " so adding to waiting list [LINE 132]");
         // add to waiting list
         request_clients.push(incoming);
         return false;
