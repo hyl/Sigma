@@ -101,8 +101,7 @@ function send(from, to, message){
 }
 
 function findPartners(incoming){
-    var largerCount = 0,
-        index; // will contain the count & index of largest match
+    var largerCount = 0, index; // will contain the count & index of largest match
     for (var i = 0; i < request_clients.length; i++) { // iterate over the waiting list
         var current = request_clients[i];
         log("debug", "Current object is \"" + JSON.stringify(current) + "\" [LINE 108]");
@@ -125,7 +124,7 @@ function findPartners(incoming){
         log("debug", "currentCount set to zero" + " [LINE 125]");
     }
     log("debug", "Index is \"" + index + "\" [LINE 127]");
-    if(index) {
+    if(index != null) {
         log("success", "Found match for client " + incoming.from.id + "->" + request_clients[index].id + " [LINE 129]");
         return request_clients[index]; // print the match
     } else {
