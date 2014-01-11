@@ -15,7 +15,7 @@ function connect(){
 		unread = 0;
 
 	client.self.interests = $("#interests").tagsinput("items");
-	console.log(client.self.interests);
+	window.localStorage.setItem("interests", $("#interests").val());
 
 	/* ========== WEBSOCKET STUFF ========== */
 	switch (ws.readyState) {
