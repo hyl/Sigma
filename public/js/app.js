@@ -209,11 +209,11 @@ function connect(){
 		$(".sys_message, .sys_disconnect, .sys_send_picture").prop('disabled', action);
 	}
 	function replaceURLS(text) {
-		// Parse links, images and youtube here (Depending on settings)
-		//go through the text, replacing URLS wherever we can
-		text = text.replace(regex[0], '<a href="$1" target="_blank">$1</a>');
-		text = text.replace(regex[1], '$1<a href="http://$2" target="_blank">$2</a>');
-		text = text.replace(regex[2], '<a href="mailto:$1">$1</a>');
+		window.localStorage.getItem("parse_links") == "true"){
+			text = text.replace(regex[0], '<a href="$1" target="_blank">$1</a>');
+			text = text.replace(regex[1], '$1<a href="http://$2" target="_blank">$2</a>');
+			text = text.replace(regex[2], '<a href="mailto:$1">$1</a>');
+		}
 		return text;
 	}
 	function onBlur() {
