@@ -19,7 +19,7 @@
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" id="parse_links" disabled>
+          <input type="checkbox" id="parse_links">
           Automatically turn URLs into clickable links
         </label>
       </div>
@@ -56,6 +56,11 @@
   }else{
     $("#hide_buttons").prop("checked", false);
   }
+  if(window.localStorage.getItem("parse_links") == "true"){
+    $("#parse_links").prop("checked", true);
+  }else{
+    $("#parse_links").prop("checked", false);
+  }
   if(window.localStorage.getItem("native_notification") == "true"){
     $("#native_notification").prop("checked", true);
   }else{
@@ -66,6 +71,11 @@
       window.localStorage.setItem("hide_buttons", true);
     }else{
       window.localStorage.setItem("hide_buttons", false);
+    }
+    if($("#parse_links").prop("checked")){
+      window.localStorage.setItem("parse_links", true);
+    }else{
+      window.localStorage.setItem("parse_links", false);
     }
     if($("#native_notification").prop("checked")){
       notify("Test Notification", "You have successfully enabled notifications", "http://cdn1.iconfinder.com/data/icons/windows-8-metro-style/26/checked_checkbox.png");

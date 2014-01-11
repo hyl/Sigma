@@ -85,8 +85,8 @@
             <div class="no-jumbo">
               <input type="text" id="interests" placeholder="Enter your interests (hit enter after each one)" data-role="tagsinput" disabled="true"/>
               <p class="help-block">We will try to match you with users that have all, or some of your interests.</p>
-              <div class="alert alert-warning">
-                <strong>Warning:</strong> This feature is still under development. Please don't add anything here yet.
+              <div class="alert alert-success">
+                <strong>New Feature:</strong> Interests are now live! Give it a go and <a href="mailto:benedict@ovalbit.com">tell me what you think</a> or <a href="http://github.com/OvalBit/Sigma/issues/new" target="_blank">submit a bug report</a>.
               </div>
             </div>
           </div>
@@ -169,6 +169,7 @@
     $("body").on("hidden.bs.modal", ".modal", function () {
       $(this).removeData("bs.modal");
     });
+    $("#interests").val(window.localStorage.getItem("interests"));
     </script>
 
     <!-- Modal for AJAX Content, loaded with data-api (after JS so can access app.js) -->
