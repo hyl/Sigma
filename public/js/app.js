@@ -1,11 +1,14 @@
 $("#chat, #typing, #footer").hide();
+
 $("#startchat").click(function(){
 	$("#intro").fadeOut(function(){
 		$("#chat, #footer").fadeIn();
 			connect();
 	});
 });
+
 var client = {"self": {"id": null, "hash": null, "interests": null}, "partner": {"id": null, "hash": null, "automessage": {"asl": null, "name": null, "email": null, "kik": null, "skype": null}}};
+
 function connect(){
 	var ws = new WebSocket('ws://109.74.195.222:8888', 'echo-protocol'),
 		focused,
@@ -173,6 +176,16 @@ function connect(){
 		}
 	});
 
+	/* ========== VARIABLES ========== */
+	//create array for all the regex we can do to URLs
+	var regex = [];
+    	//URLs starting with http://, https://, or ftp://
+    	regex[0] = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    	//URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+    	regex[1] = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+    	//Change email addresses to mailto:: links.
+    	regex[2] = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
+
 	/* ========== FUNCTIONS ========== */
 	function escape(message){
 		return $("<div/>").text(message).html();
@@ -197,6 +210,10 @@ function connect(){
 	}
 	function replaceURLS(text) {
 		// Parse links, images and youtube here (Depending on settings)
+		//go through the text, replacing URLS wherever we can
+		text = text.replace(regex[0], '<a href="$1" target="_blank">$1</a>');
+		text = text.replace(regex[1], '$1<a href="http://$2" target="_blank">$2</a>');
+		text = text.replace(regex[2], '<a href="mailto:$1">$1</a>');
 		return text;
 	}
 	function onBlur() {

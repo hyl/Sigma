@@ -1,7 +1,7 @@
 {
   "name": "Sigma",
   "description": "Private web chat using Node.js and WebSocket.",
-  "version": "0.1",
+  "version": "0.1.0",
   "author": "Benedict Lewis <benedict@ovalbit.com>",
   "contributors": [
     {
@@ -11,7 +11,6 @@
     }
   ],
   "dependencies": {
-    "http": "latest",
     "crypto": "latest",
     "cli-color": "latest",
     "express": "latest",

@@ -21,10 +21,7 @@ Requirements
 Installation
 ============
 1. Stick `server/server.js` on your server.
-2. Install Crypto with `sudo npm install crypto`
-3. Install cli-color with `sudo npm install cli-color`
-4. Install Express.js with `sudo npm install express`
-5. Install WebSocket with `sudo npm install websocket`
-6. Now run `sudo node server.js`.
-7. Put `client/index.html` somewhere and make sure that the path in `client/js/app.js` matches that of your install location.
-8. Open `index.html` in your browser and give it a go with a friend.
+2. Run `sudo npm install`. This installs all the dependencies required for Sigma to run. Be patient!
+3. Now run `sudo node server.js`.
+4. Put `client/index.html` somewhere and make sure that the path in `client/js/app.js` matches that of your install location.
+5. Open `index.html` in your browser and give it a go with a friend.
